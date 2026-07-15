@@ -1,0 +1,357 @@
+====================================================
+2026-07-15 18:32:48
+Running Containers
+====================================================
+Docker version 29.6.1, build 8900f1d
+====================================================
+2026-07-15 18:32:48
+Running Containers
+====================================================
+CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS                         PORTS     NAMES
+5c2c23d15065   nginx     "/docker-entrypoint.…"   About an hour ago   Exited (0) About an hour ago             testing2
+daea6b3176f0   nginx     "/docker-entrypoint.…"   About an hour ago   Up About an hour               80/tcp    testing
+====================================================
+2026-07-15 18:32:48
+Running Containers
+====================================================
+CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS                         PORTS     NAMES
+5c2c23d15065   nginx     "/docker-entrypoint.…"   About an hour ago   Exited (0) About an hour ago             testing2
+====================================================
+2026-07-15 18:32:53
+Running Containers
+====================================================
+Docker version 29.6.1, build 8900f1d
+====================================================
+2026-07-15 18:32:53
+Running Containers
+====================================================
+CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS                         PORTS     NAMES
+5c2c23d15065   nginx     "/docker-entrypoint.…"   About an hour ago   Exited (0) About an hour ago             testing2
+daea6b3176f0   nginx     "/docker-entrypoint.…"   About an hour ago   Up About an hour               80/tcp    testing
+====================================================
+2026-07-15 18:32:53
+Running Containers
+====================================================
+CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS                         PORTS     NAMES
+5c2c23d15065   nginx     "/docker-entrypoint.…"   About an hour ago   Exited (0) About an hour ago             testing2
+====================================================
+2026-07-15 18:32:58
+Running Containers
+====================================================
+Docker version 29.6.1, build 8900f1d
+====================================================
+2026-07-15 18:32:58
+Running Containers
+====================================================
+CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS                         PORTS     NAMES
+5c2c23d15065   nginx     "/docker-entrypoint.…"   About an hour ago   Exited (0) About an hour ago             testing2
+daea6b3176f0   nginx     "/docker-entrypoint.…"   About an hour ago   Up About an hour               80/tcp    testing
+====================================================
+2026-07-15 18:32:58
+Running Containers
+====================================================
+CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS                         PORTS     NAMES
+5c2c23d15065   nginx     "/docker-entrypoint.…"   About an hour ago   Exited (0) About an hour ago             testing2
+====================================================
+2026-07-15 18:33:03
+Running Containers
+====================================================
+Docker version 29.6.1, build 8900f1d
+====================================================
+2026-07-15 18:33:03
+Running Containers
+====================================================
+CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS                         PORTS     NAMES
+5c2c23d15065   nginx     "/docker-entrypoint.…"   About an hour ago   Exited (0) About an hour ago             testing2
+daea6b3176f0   nginx     "/docker-entrypoint.…"   About an hour ago   Up About an hour               80/tcp    testing
+====================================================
+2026-07-15 18:33:03
+Running Containers
+====================================================
+CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS                         PORTS     NAMES
+5c2c23d15065   nginx     "/docker-entrypoint.…"   About an hour ago   Exited (0) About an hour ago             testing2
+====================================================
+2026-07-15 18:33:08
+Running Containers
+====================================================
+Docker version 29.6.1, build 8900f1d
+====================================================
+2026-07-15 18:33:08
+Running Containers
+====================================================
+CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS                         PORTS     NAMES
+5c2c23d15065   nginx     "/docker-entrypoint.…"   About an hour ago   Exited (0) About an hour ago             testing2
+daea6b3176f0   nginx     "/docker-entrypoint.…"   About an hour ago   Up About an hour               80/tcp    testing
+====================================================
+2026-07-15 18:33:08
+Running Containers
+====================================================
+CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS                         PORTS     NAMES
+5c2c23d15065   nginx     "/docker-entrypoint.…"   About an hour ago   Exited (0) About an hour ago             testing2
+====================================================
+2026-07-15 18:33:13
+Running Containers
+====================================================
+Docker version 29.6.1, build 8900f1d
+====================================================
+2026-07-15 18:33:13
+Running Containers
+====================================================
+CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS                         PORTS     NAMES
+5c2c23d15065   nginx     "/docker-entrypoint.…"   About an hour ago   Exited (0) About an hour ago             testing2
+daea6b3176f0   nginx     "/docker-entrypoint.…"   About an hour ago   Up About an hour               80/tcp    testing
+====================================================
+2026-07-15 18:33:13
+Running Containers
+====================================================
+CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS                         PORTS     NAMES
+5c2c23d15065   nginx     "/docker-entrypoint.…"   About an hour ago   Exited (0) About an hour ago             testing2
+====================================================
+2026-07-15 18:47:48
+Running Containers
+====================================================
+Docker version 29.6.1, build 8900f1d
+====================================================
+2026-07-15 18:47:48
+Running Containers
+====================================================
+CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS                         PORTS     NAMES
+5c2c23d15065   nginx     "/docker-entrypoint.…"   About an hour ago   Exited (0) About an hour ago             testing2
+daea6b3176f0   nginx     "/docker-entrypoint.…"   About an hour ago   Up About an hour               80/tcp    testing
+====================================================
+2026-07-15 18:47:48
+Running Containers
+====================================================
+CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS                         PORTS     NAMES
+5c2c23d15065   nginx     "/docker-entrypoint.…"   About an hour ago   Exited (0) About an hour ago             testing2
+====================================================
+2026-07-15 18:47:53
+Running Containers
+====================================================
+Docker version 29.6.1, build 8900f1d
+====================================================
+2026-07-15 18:47:53
+Running Containers
+====================================================
+CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS                         PORTS     NAMES
+5c2c23d15065   nginx     "/docker-entrypoint.…"   About an hour ago   Exited (0) About an hour ago             testing2
+daea6b3176f0   nginx     "/docker-entrypoint.…"   About an hour ago   Up About an hour               80/tcp    testing
+====================================================
+2026-07-15 18:47:53
+Running Containers
+====================================================
+CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS                         PORTS     NAMES
+5c2c23d15065   nginx     "/docker-entrypoint.…"   About an hour ago   Exited (0) About an hour ago             testing2
+====================================================
+2026-07-15 18:47:58
+Running Containers
+====================================================
+Docker version 29.6.1, build 8900f1d
+====================================================
+2026-07-15 18:47:58
+Running Containers
+====================================================
+CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS                         PORTS     NAMES
+5c2c23d15065   nginx     "/docker-entrypoint.…"   About an hour ago   Exited (0) About an hour ago             testing2
+daea6b3176f0   nginx     "/docker-entrypoint.…"   About an hour ago   Up About an hour               80/tcp    testing
+====================================================
+2026-07-15 18:47:58
+Running Containers
+====================================================
+CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS                         PORTS     NAMES
+5c2c23d15065   nginx     "/docker-entrypoint.…"   About an hour ago   Exited (0) About an hour ago             testing2
+====================================================
+2026-07-15 18:48:03
+Running Containers
+====================================================
+Docker version 29.6.1, build 8900f1d
+====================================================
+2026-07-15 18:48:03
+Running Containers
+====================================================
+CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS                         PORTS     NAMES
+5c2c23d15065   nginx     "/docker-entrypoint.…"   About an hour ago   Exited (0) About an hour ago             testing2
+daea6b3176f0   nginx     "/docker-entrypoint.…"   About an hour ago   Up About an hour               80/tcp    testing
+====================================================
+2026-07-15 18:48:03
+Running Containers
+====================================================
+CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS                         PORTS     NAMES
+5c2c23d15065   nginx     "/docker-entrypoint.…"   About an hour ago   Exited (0) About an hour ago             testing2
+====================================================
+2026-07-15 18:48:08
+Running Containers
+====================================================
+Docker version 29.6.1, build 8900f1d
+====================================================
+2026-07-15 18:48:08
+Running Containers
+====================================================
+CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS                         PORTS     NAMES
+5c2c23d15065   nginx     "/docker-entrypoint.…"   About an hour ago   Exited (0) About an hour ago             testing2
+daea6b3176f0   nginx     "/docker-entrypoint.…"   About an hour ago   Up About an hour               80/tcp    testing
+====================================================
+2026-07-15 18:48:08
+Running Containers
+====================================================
+CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS                         PORTS     NAMES
+5c2c23d15065   nginx     "/docker-entrypoint.…"   About an hour ago   Exited (0) About an hour ago             testing2
+====================================================
+2026-07-15 18:48:13
+Running Containers
+====================================================
+Docker version 29.6.1, build 8900f1d
+====================================================
+2026-07-15 18:48:13
+Running Containers
+====================================================
+CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS                         PORTS     NAMES
+5c2c23d15065   nginx     "/docker-entrypoint.…"   About an hour ago   Exited (0) About an hour ago             testing2
+daea6b3176f0   nginx     "/docker-entrypoint.…"   About an hour ago   Up About an hour               80/tcp    testing
+====================================================
+2026-07-15 18:48:13
+Running Containers
+====================================================
+CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS                         PORTS     NAMES
+5c2c23d15065   nginx     "/docker-entrypoint.…"   About an hour ago   Exited (0) About an hour ago             testing2
+====================================================
+2026-07-15 18:48:18
+Running Containers
+====================================================
+Docker version 29.6.1, build 8900f1d
+====================================================
+2026-07-15 18:48:18
+Running Containers
+====================================================
+CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS                         PORTS     NAMES
+5c2c23d15065   nginx     "/docker-entrypoint.…"   About an hour ago   Exited (0) About an hour ago             testing2
+daea6b3176f0   nginx     "/docker-entrypoint.…"   About an hour ago   Up About an hour               80/tcp    testing
+====================================================
+2026-07-15 18:48:19
+Running Containers
+====================================================
+CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS                         PORTS     NAMES
+5c2c23d15065   nginx     "/docker-entrypoint.…"   About an hour ago   Exited (0) About an hour ago             testing2
+====================================================
+2026-07-15 18:48:24
+Running Containers
+====================================================
+Docker version 29.6.1, build 8900f1d
+====================================================
+2026-07-15 18:48:24
+Running Containers
+====================================================
+CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS                         PORTS     NAMES
+5c2c23d15065   nginx     "/docker-entrypoint.…"   About an hour ago   Exited (0) About an hour ago             testing2
+daea6b3176f0   nginx     "/docker-entrypoint.…"   About an hour ago   Up About an hour               80/tcp    testing
+====================================================
+2026-07-15 18:48:24
+Running Containers
+====================================================
+CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS                         PORTS     NAMES
+5c2c23d15065   nginx     "/docker-entrypoint.…"   About an hour ago   Exited (0) About an hour ago             testing2
+====================================================
+2026-07-15 18:48:29
+Running Containers
+====================================================
+Docker version 29.6.1, build 8900f1d
+====================================================
+2026-07-15 18:48:29
+Running Containers
+====================================================
+CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS                         PORTS     NAMES
+5c2c23d15065   nginx     "/docker-entrypoint.…"   About an hour ago   Exited (0) About an hour ago             testing2
+daea6b3176f0   nginx     "/docker-entrypoint.…"   About an hour ago   Up About an hour               80/tcp    testing
+====================================================
+2026-07-15 18:48:29
+Running Containers
+====================================================
+CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS                         PORTS     NAMES
+5c2c23d15065   nginx     "/docker-entrypoint.…"   About an hour ago   Exited (0) About an hour ago             testing2
+====================================================
+2026-07-15 18:48:34
+Running Containers
+====================================================
+Docker version 29.6.1, build 8900f1d
+====================================================
+2026-07-15 18:48:34
+Running Containers
+====================================================
+CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS                         PORTS     NAMES
+5c2c23d15065   nginx     "/docker-entrypoint.…"   About an hour ago   Exited (0) About an hour ago             testing2
+daea6b3176f0   nginx     "/docker-entrypoint.…"   About an hour ago   Up About an hour               80/tcp    testing
+====================================================
+2026-07-15 18:48:34
+Running Containers
+====================================================
+CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS                         PORTS     NAMES
+5c2c23d15065   nginx     "/docker-entrypoint.…"   About an hour ago   Exited (0) About an hour ago             testing2
+====================================================
+2026-07-15 18:48:39
+Running Containers
+====================================================
+Docker version 29.6.1, build 8900f1d
+====================================================
+2026-07-15 18:48:39
+Running Containers
+====================================================
+CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS                         PORTS     NAMES
+5c2c23d15065   nginx     "/docker-entrypoint.…"   About an hour ago   Exited (0) About an hour ago             testing2
+daea6b3176f0   nginx     "/docker-entrypoint.…"   About an hour ago   Up About an hour               80/tcp    testing
+====================================================
+2026-07-15 18:48:39
+Running Containers
+====================================================
+CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS                         PORTS     NAMES
+5c2c23d15065   nginx     "/docker-entrypoint.…"   About an hour ago   Exited (0) About an hour ago             testing2
+====================================================
+2026-07-15 18:50:19
+Running Containers
+====================================================
+Docker version 29.6.1, build 8900f1d
+====================================================
+2026-07-15 18:50:19
+Running Containers
+====================================================
+CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS             PORTS     NAMES
+daea6b3176f0   nginx     "/docker-entrypoint.…"   About an hour ago   Up About an hour   80/tcp    testing
+====================================================
+2026-07-15 18:50:19
+Running Containers
+====================================================
+CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS                         PORTS     NAMES
+5c2c23d15065   nginx     "/docker-entrypoint.…"   About an hour ago   Exited (0) About an hour ago             testing2
+====================================================
+2026-07-15 18:50:24
+Running Containers
+====================================================
+Docker version 29.6.1, build 8900f1d
+====================================================
+2026-07-15 18:50:24
+Running Containers
+====================================================
+CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS             PORTS     NAMES
+daea6b3176f0   nginx     "/docker-entrypoint.…"   About an hour ago   Up About an hour   80/tcp    testing
+====================================================
+2026-07-15 18:50:24
+Running Containers
+====================================================
+CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS                         PORTS     NAMES
+5c2c23d15065   nginx     "/docker-entrypoint.…"   About an hour ago   Exited (0) About an hour ago             testing2
+====================================================
+2026-07-15 18:50:29
+Running Containers
+====================================================
+Docker version 29.6.1, build 8900f1d
+====================================================
+2026-07-15 18:50:29
+Running Containers
+====================================================
+CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS             PORTS     NAMES
+daea6b3176f0   nginx     "/docker-entrypoint.…"   About an hour ago   Up About an hour   80/tcp    testing
+====================================================
+2026-07-15 18:50:29
+Running Containers
+====================================================
+CONTAINER ID   IMAGE     COMMAND                  CREATED             STATUS                         PORTS     NAMES
+5c2c23d15065   nginx     "/docker-entrypoint.…"   About an hour ago   Exited (0) About an hour ago             testing2

@@ -15,7 +15,8 @@ def docker_logs_header(logs) :
 to_gb = 1024 ** 3
 
 
-def sys_usage() :
+def sys_usage(sys_cnf) :
+		
 	print_sep()
 	print(f"TIME : [ {print_time()} ]\n")
 
@@ -23,7 +24,10 @@ def sys_usage() :
 	cpu_usage = psutil.cpu_percent(interval=1)
 
 	print(f"CPU USAGE : {cpu_usage}%")
+	max = sys_cnf.get("cpu_limit", 90.0)
 	print_sep()
+	if cpu_usage > float(max) :
+		print("[WARNING]: CPU usage is high")
 
 # RAM
 
@@ -33,46 +37,85 @@ def sys_usage() :
 	ram_available = RAM.available / to_gb
 
 	print(f"TOTAL RAM : {ram_total:.2f} gb    |    RAM USAGE : {ram_used}%    |    RAM AVAILABLE : {ram_available:.2f} gb")
+	max = sys_cnf.get("ram_limit", 85)
 	print_sep()
-#CPU
-
+	if ram_used > float(max) :
+		print("[WARNING]: RAM usage is high")
+#DISK
 	DISK = psutil.disk_usage('/')
 	ds_total = DISK.total / to_gb
 	ds_used = DISK.percent
 	ds_available = DISK.free / to_gb
 	print(f"TOTAL DISK: {ds_total:.2f} gb    |    DISK USAGE : {ds_used}%    |    DISK AVAILABLE : {ds_available:.2f} gb")
 	print_sep()
+	max = sys_cnf.get("disk_limit" , 90)
+	if ds_used > float(max) :
+		print("[WARNING]: DISK usage is high")
 
+def get_docker_status(logs) -> bool :
 
-def docker_monitoring(logs) :
-
-# Docker Services
 	try :
-		ps = subprocess.run(["docker", "--version"], capture_output=True, text=True, check=True)
-		print(ps.stdout)
+		ps = subprocess.run(['docker' , "info"], capture_output=True, text=True, check=True, timeout=10)
 		docker_logs_header(logs)
 		logs.write(ps.stdout)
 		logs.write(ps.stderr)
+		return True
 
 	except subprocess.CalledProcessError:
 			print("Error: Docker is not installed or not running.")
-			return
+			docker_logs_header(logs)
+			logs.write(f"FAILURE: Docker daemon error\n{e.stderr}\n")
+			return False
+	except FileNotFoundError :
+			print("✗ Error: Docker CLI not found. Is Docker installed?")
+			docker_logs_header(logs)
+			logs.write(ps.stderr)
+			return False
+	except subprocess.TimeoutExpired:
+			print("✗ Error: Docker daemon is unresponsive (timeout).")
+			docker_logs_header(logs)
+			logs.write("FAILURE: Docker daemon timeout\n{e.stderr}")
+			return False
 	
-	#running
+def write_logs(file, what_to_write) :
+		docker_logs_header(file)
+		file.write(what_to_write)
+
+
+
+
+
+
+
+
+def docker_monitoring(logs, data1) :
+	# docker info ...
+	if get_docker_status(logs) == False :
+		return
+	
+	# docker ps
 	try :
-		ps = subprocess.run(["docker" , "ps"], capture_output=True, text=True, check=True)
+		ps = subprocess.run(["docker" , "ps" , "-a" , "--format", "{{.Names}} | {{.Status}}"], capture_output=True, text=True, check=True)
 		print(ps.stdout)
-		docker_logs_header(logs)
-		logs.write(ps.stdout)
-		logs.write(ps.stderr)
-	#stopped
-		ps = subprocess.run(["docker" ,  "ps" ,  "-a" , "--filter" , "status=exited"], capture_output=True ,  text=True , check=True)
-		print(ps.stdout)
-		if "Exited" in ps.stdout :
-				print("A container has stopped!")
-		docker_logs_header(logs)
-		logs.write(ps.stdout)
-		logs.write(ps.stderr)
+		# i need to store the running container
+		lines = ps.stdout.split('\n') # you should remove the  []  cuz it will create a nested list { [1 , 2 ,3] }
+		for line in lines :
+			pipe = line.split('|')
+			if len(pipe) == 2 :
+				data1[pipe[0]] = pipe[1]
+			else :
+				data1[pipe[0]] =  ""
+	
+		# search the stopped container 
+		for k , v in data1.items():
+			if "Exited" in v :
+				print(f"[ALERT] : {k} has stopped!")
+
+		write_logs(logs, ps.stdout)
+		write_logs(logs, ps.stderr)
+
+
+
 	except subprocess.CalledProcessError:
 			print("Error: docker ps failed, check docker.logs !")
 			return
@@ -85,12 +128,25 @@ def docker_monitoring(logs) :
 
 
 with open("docker.logs", 'a') as logs:
+	with open("usage.conf", 'r') as config :
 
-	while True :
-		sys_usage()
-		docker_monitoring(logs)
-		time.sleep(4)
-		os.system("clear")
+		data1 = {}
+		config_dic = {}
+		for line in config :
+			# Strip whitespace (including newlines) from the line
+			line = line.strip()
+			if not line :
+				continue
+			equal = line.split('=')
+			if (len(equal) == 2) :
+				config_dic[equal[0].strip()] =  equal[1].strip()
+
+			
+		while True :
+			sys_usage(config_dic)
+			docker_monitoring(logs, data1)
+			time.sleep(4)
+			os.system("clear")
 
 
 

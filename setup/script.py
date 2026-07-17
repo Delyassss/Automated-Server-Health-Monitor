@@ -132,8 +132,8 @@ def docker_monitoring(logs, data1) :
 
 
 
-with open("docker.logs", 'a') as logs:
-	with open("usage.conf", 'r') as config :
+with open("./setup/docker.logs", 'a') as logs:
+	with open("./setup/usage.conf", 'r') as config :
 
 		data1 = {}
 		config_dic = {}

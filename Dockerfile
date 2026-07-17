@@ -6,8 +6,6 @@ RUN apt-get update  && apt-get install -y \
 
 COPY ./setup   /home/AserverHC/setup/
 
-RUN chmod +x /home/AserverHC/setup/*.py
-
 RUN pip3 install psutil
 
 WORKDIR /home/AserverHC/setup/

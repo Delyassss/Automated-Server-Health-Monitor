@@ -10,8 +10,8 @@ COPY ./setup   /home/AserverHC/setup/
 
 RUN pip3 install --break-system-packages psutil
 
-WORKDIR /home/AserverHC/setup/
+WORKDIR /home/AserverHC
 
 
-ENTRYPOINT ["python3" , "script.py"]
+ENTRYPOINT ["python3" , "./setup/script.py"]
 

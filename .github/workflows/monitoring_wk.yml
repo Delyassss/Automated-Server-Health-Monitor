@@ -9,6 +9,7 @@ jobs :
     steps : 
       - name : repo_check
         uses : actions/checkout@v4
+        
       - name : setup python 
         uses : actions/setup-python@v5
         with : 
@@ -31,7 +32,7 @@ jobs :
     runs-on: ubuntu-latest
 
     steps : 
-      - name : repo_check
+      - name : repo_check2
         uses : actions/checkout@v4
 
       - name : build

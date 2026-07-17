@@ -71,9 +71,8 @@ def get_docker_status(logs) -> bool :
 	except FileNotFoundError :
 			print("✗ Error: Docker CLI not found. Is Docker installed?")
 			docker_logs_header(logs)
-			logs.write(ps.stderr)
 			return False
-	except subprocess.TimeoutExpired:
+	except subprocess.TimeoutExpired : 
 			print("✗ Error: Docker daemon is unresponsive (timeout).")
 			docker_logs_header(logs)
 			logs.write("FAILURE: Docker daemon timeout\n{e.stderr}")

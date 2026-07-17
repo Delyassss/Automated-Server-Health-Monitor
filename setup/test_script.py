@@ -129,6 +129,11 @@ def docker_monitoring(logs, data1) :
 			return
 
 
+def monitoring(config_dic , logs, data1) :
+    sys_usage(config_dic)
+    docker_monitoring(logs, data1)
+    time.sleep(4)
+    os.system("clear")
 
 
 
@@ -146,12 +151,13 @@ with open("docker.logs", 'a') as logs:
 			if (len(equal) == 2) :
 				config_dic[equal[0].strip()] =  equal[1].strip()
 
-			
+	if "--ci" in sys.argv :
+		for i in range(4) :
+			monitoring(config_dic , logs, data1)
+	else :	
 		while True :
-			sys_usage(config_dic)
-			docker_monitoring(logs, data1)
-			time.sleep(4)
-			os.system("clear")
+			monitoring(config_dic , logs, data1)
+
 
 
 

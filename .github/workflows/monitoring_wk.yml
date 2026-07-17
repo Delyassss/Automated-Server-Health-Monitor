@@ -1,0 +1,43 @@
+name : monitoring_wk
+
+on : push
+
+jobs :
+  one :
+    runs-on: ubuntu-latest
+
+    steps : 
+      - name : repo_check
+        uses : actions/checkout@v4
+      - name : setup python 
+        uses : actions/setup-python@v5
+        with : 
+          python-version : "3.12"
+  
+
+      - name : dependecies
+        run : python -m pip install --upgrade pip && pip install -r requirements.txt
+
+      - name : check_config
+        run : cat ./setup/usage.conf
+
+      - name : running
+        run : python ./setup/script.py --ci
+      - name : check_logs
+        run : cat ./setup/docker.logs
+
+  two : 
+    needs : one
+    runs-on: ubuntu-latest
+
+    steps : 
+      - name : repo_check
+        uses : actions/checkout@v4
+
+      - name : build
+        run : docker build -t monitor .
+      - name : start
+        run : docker run --name AserverHC monitor --ci
+
+
+

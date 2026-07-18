@@ -1,5 +1,5 @@
 import sys
-
+import requests
 import psutil
 import time
 import os
@@ -127,6 +127,7 @@ def docker_monitoring(logs, data1) :
 			print("Error: File not found !")
 			return
 
+def send_discord_alert() :
 
 def monitoring(config_dic, logs, data1) :
 		sys_usage(config_dic)

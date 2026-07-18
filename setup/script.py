@@ -5,6 +5,7 @@ import time
 import os
 import subprocess
 from datetime import datetime
+from dotenv import load_dotenv
 
 def print_sep():
 	print("_" * 100 + '\n')
@@ -13,10 +14,11 @@ def print_time() :
 def docker_logs_header(logs) :
 	print(f"====================================================\n{print_time()}\nRunning Containers\n====================================================", file=logs)   
 
-
+load_dotenv()  # Load variables from .env file into the environment
 to_gb = 1024 ** 3
-
-
+discord__url = os.getenv('dis_token')
+headers = {"Autorisation " : discord__url}
+last_alert = 0;
 def sys_usage(sys_cnf) :
 		
 	print_sep()
@@ -106,10 +108,9 @@ def docker_monitoring(logs, data1) :
 		for line in lines :
 			pipe = line.split('|')
 			if len(pipe) == 2 :
-				data1[pipe[0]] = pipe[1]
+				data1[pipe[0].strip()] = pipe[1].strip()
 			else :
-				data1[pipe[0]] =  ""
-	
+				data1[pipe[0].strip()] =  ""
 		# search the stopped container 
 		for k , v in data1.items():
 			if "Exited" in v :
@@ -127,7 +128,17 @@ def docker_monitoring(logs, data1) :
 			print("Error: File not found !")
 			return
 
-def send_discord_alert() :
+def send_discord_alert(key, value) :
+	try :
+		print("[POST REQUEST] ...")
+		message = f"[ALERT] {print_time()} 🚨 {key} : {value}"
+		response = requests.post(discord__url, message, timeout=2, headers=headers);
+
+	except requests.exceptions.Timeout :
+			print("[Request Failed] timed out !")
+	except requests.exceptions.RequestException as e :
+			print("Request Failed : " , e )
+
 
 def monitoring(config_dic, logs, data1) :
 		sys_usage(config_dic)
@@ -157,38 +168,3 @@ with open("./setup/docker.logs", 'a') as logs:
 		else :
 			while True :
 				monitoring(config_dic, logs , data1)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	time.sleep(4)
-	os.system("clear")

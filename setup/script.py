@@ -6,6 +6,7 @@ import os
 import subprocess
 from datetime import datetime
 from dotenv import load_dotenv
+import time
 
 def print_sep():
 	print("_" * 100 + '\n')
@@ -18,7 +19,12 @@ load_dotenv()  # Load variables from .env file into the environment
 to_gb = 1024 ** 3
 discord__url = os.getenv('dis_token')
 headers = {"Autorisation " : discord__url}
-last_alert = 0;
+last_alert = 0
+
+def get_seconds() :
+	seconds = time.time_ns() // 1_000_0000_000
+	return seconds
+	
 def sys_usage(sys_cnf) :
 		
 	print_sep()
@@ -93,7 +99,7 @@ def write_logs(file, what_to_write) :
 
 
 
-def docker_monitoring(logs, data1) :
+def docker_monitoring(logs, data1, previous) :
 	# docker info ...
 	if get_docker_status(logs) == False :
 		return
@@ -108,14 +114,19 @@ def docker_monitoring(logs, data1) :
 		for line in lines :
 			pipe = line.split('|')
 			if len(pipe) == 2 :
-				data1[pipe[0].strip()] = pipe[1].strip()
+				data1[pipe[0].strip()] = { "state " : pipe[1],
+							  				"last_alert " : get_seconds()
+										}
 			else :
 				data1[pipe[0].strip()] =  ""
+
 		# search the stopped container 
 		for k , v in data1.items():
-			if "Exited" in v :
-				print(f"[ALERT] : {k} has stopped!")
-
+			if ()
+			if "Exited" in v.get("state"):
+				if (get_seconds - float(v.get("last_alert")) == ) :
+					print(f"[ALERT] : {k} has stopped!")
+		previous = data1
 		write_logs(logs, ps.stdout)
 		write_logs(logs, ps.stderr)
 
@@ -151,6 +162,7 @@ with open("./setup/docker.logs", 'a') as logs:
 	with open("./setup/usage.conf", 'r') as config :
 
 		data1 = {}
+		previous = {}
 		config_dic = {}
 		for line in config :
 			# Strip whitespace (including newlines) from the line
@@ -163,8 +175,7 @@ with open("./setup/docker.logs", 'a') as logs:
 
 		if "--ci" in sys.argv :
 			for i in range(4) :
-				monitoring(config_dic, logs , data1)
-
+				monitoring(config_dic, logs , data1, previous)
 		else :
 			while True :
-				monitoring(config_dic, logs , data1)
+				monitoring(config_dic, logs , data1, previous)

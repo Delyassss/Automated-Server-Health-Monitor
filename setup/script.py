@@ -107,25 +107,38 @@ def docker_monitoring(logs, data1, previous) :
 	# docker ps
 	try :
 		ps = subprocess.run(["docker" , "ps" , "-a" , "--format", "{{.Names}} | {{.Status}}"], capture_output=True, text=True, check=True)
+		if not ps.stdout.strip() :
+			raise ValueError("[Error] probably there is no data ! check if you have at least one container")
 		docker_logs_header(sys.stdout)
-		print(ps.stdout)
+		print(ps.stdout) 
 		# i need to store the running container
 		lines = ps.stdout.split('\n') # you should remove the  []  cuz it will create a nested list { [1 , 2 ,3] }
 		for line in lines :
 			pipe = line.split('|')
 			if len(pipe) == 2 :
-				data1[pipe[0].strip()] = { "state " : pipe[1],
-							  				"last_alert " : get_seconds()
+				data1[pipe[0].strip()] = { "state" : pipe[1],
+							  				"last_alert" : get_seconds()
 										}
 			else :
 				data1[pipe[0].strip()] =  ""
 
 		# search the stopped container 
 		for k , v in data1.items():
-			if ()
-			if "Exited" in v.get("state"):
-				if (get_seconds - float(v.get("last_alert")) == ) :
-					print(f"[ALERT] : {k} has stopped!")
+				if not previous :
+					if "Exited" in v.get("state"):
+						print(f"[ALERT] : {k} has stopped!")
+						send_discord_alert(k, v, "ALERT")
+				else :
+					if v.get("state") != previous.get('state') :
+						if "Exited" in v.get("state") :
+							print(f"[ALERT] : {k} has stopped!")
+							send_discord_alert(k, v.get("state"), "ALERT")
+						elif "Up" in v.get("state") :
+							print(f"[SUCCESS] : {k} is UP!")
+							send_discord_alert(k, v.get("state"), "SUCCESS")
+						else :
+							print(f"[WARNING] : {k} -> { v.get('state') }")
+							send_discord_alert(k, v.get("state"), "SUCCESS")
 		previous = data1
 		write_logs(logs, ps.stdout)
 		write_logs(logs, ps.stderr)
@@ -138,11 +151,14 @@ def docker_monitoring(logs, data1, previous) :
 	except FileNotFoundError :
 			print("Error: File not found !")
 			return
+	except Exception as e :
+			print(e)
+			return 
 
-def send_discord_alert(key, value) :
+def send_discord_alert(key, value, type) :
 	try :
 		print("[POST REQUEST] ...")
-		message = f"[ALERT] {print_time()} 🚨 {key} : {value}"
+		message = f"[{type}] {print_time()} 🚨 {key} : {value}"
 		response = requests.post(discord__url, message, timeout=2, headers=headers);
 
 	except requests.exceptions.Timeout :
@@ -151,9 +167,9 @@ def send_discord_alert(key, value) :
 			print("Request Failed : " , e )
 
 
-def monitoring(config_dic, logs, data1) :
+def monitoring(config_dic, logs, data1, previous) :
 		sys_usage(config_dic)
-		docker_monitoring(logs, data1)
+		docker_monitoring(logs, data1, previous)
 		time.sleep(4)
 		os.system("clear")
 

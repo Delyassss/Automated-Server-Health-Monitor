@@ -87,7 +87,8 @@ def get_docker_status(logs) -> bool :
     		f"Stopped Containers: {in_json.get('ContainersStopped', 0)}\n"
     		f"{'='*30}\n" , file=logs
 			)
-		logs.write(f"[ERROR] {ps.stderr}")
+		if  ps.stderr : 
+			logs.write(f"[ERROR] {ps.stderr}")
 		return True
 
 	except subprocess.CalledProcessError:
@@ -122,7 +123,7 @@ def docker_monitoring(logs, data1, previous) :
 	
 	# docker ps
 	try :
-		ps = subprocess.run(["docker" , "ps" , "-a" , "--format", "{{.Names}} | {{.Status}}"], capture_output=True, text=True, check=True)
+		ps = subprocess.run(["docker" , "ps" , "-a" , "--format", "{{.Names}} | {{.State}}"], capture_output=True, text=True, check=True)
 		if not ps.stdout.strip() :
 			raise ValueError("[Error] probably there is no data ! check if you have at least one container")
 		docker_logs_header(sys.stdout)
@@ -146,33 +147,40 @@ def docker_monitoring(logs, data1, previous) :
 				current_state = v.get("state", "")
 
 				if not previous :
-					if "Exited" in current_state:
+					print("HAHAHAH EMPTY PREVIOUS")
+					if "exited" in current_state:
 						print(f"[ALERT] : {k} has stopped!")
 						send_discord_alert(k, v, "ALERT")
 				else :
 					if k not in previous :
-						if "Exited" in current_state :
+						if "exited" in current_state :
 							print(f"[ALERT] : {k} has stopped (newly detected)!")
 							send_discord_alert(k, v, "ALERT")
-						elif "Up" in current_state:
+						elif "running" in current_state:
 							print(f"[SUCCESS] : {k} is UP (newly detected)!")
 							send_discord_alert(k, v, "SUCCESS")
 						continue
 				
 					if current_state != previous[k].get('state', "") :
-						if "Exited" in current_state :
+						if "exited" in current_state :
 							print(f"[ALERT] : {k} has stopped!")
 							send_discord_alert(k, current_state, "ALERT")
-						elif "Up" in current_state :
+						elif "running" in current_state :
 							print(f"[SUCCESS] : {k} is UP!")
 							send_discord_alert(k, current_state, "SUCCESS")
 						else :
 							print(f"[WARNING] : {k} -> { current_state }")
 							send_discord_alert(k, current_state, "WARNING")
 
-		previous = data1
+
+		#	previous = data1.copy() # Using previous = data1 will not work correctly because it creates a reference, not a copy.
+		#	but still won't work , because the = create a local previous .
+		# 	THE CORRECT: Modifies the actual dictionary object passed in
+		previous.clear()
+		previous.update(data1)
 		write_logs(logs, ps.stdout)
-		write_logs(logs, ps.stderr)
+		if ps.stderr :
+			write_logs(logs, ps.stderr)
 
 
 
@@ -190,7 +198,11 @@ def send_discord_alert(key, value, type) :
 	try :
 		print("[POST REQUEST] ...")
 		message = f"[{type}] {print_time()} 🚨 {key} : {value}"
-		response = requests.post(discord__url, message, timeout=2, headers=headers);
+		in_json = {'content' : message}
+		response = requests.post(discord__url, in_json, timeout=2, headers=headers);
+		print(f"[REQUEST STATUS]   {response.status_code}")
+		if response.text :
+			print(f"[REQUEST RESPONSE] {response.text} ")
 
 	except requests.exceptions.Timeout :
 			print("[Request Failed] timed out !")

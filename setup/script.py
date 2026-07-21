@@ -17,8 +17,9 @@ def docker_logs_header(logs) :
 
 load_dotenv()  # Load variables from .env file into the environment
 to_gb = 1024 ** 3
-discord__url = os.getenv('dis_token')
-headers = {"Autorisation " : discord__url}
+discord__url = os.getenv('dis_url')
+discord__token = os.getenv('dis_token')
+headers = {"Autorisation " : discord__token}
 last_alert = 0
 
 def get_seconds() :
@@ -114,31 +115,46 @@ def docker_monitoring(logs, data1, previous) :
 		# i need to store the running container
 		lines = ps.stdout.split('\n') # you should remove the  []  cuz it will create a nested list { [1 , 2 ,3] }
 		for line in lines :
-			pipe = line.split('|')
+			if not line.strip() :
+				continue 
+			pipe = line.split('|') # Returns a flat list: ['key', 'value'] or ['key']
 			if len(pipe) == 2 :
 				data1[pipe[0].strip()] = { "state" : pipe[1],
 							  				"last_alert" : get_seconds()
 										}
 			else :
-				data1[pipe[0].strip()] =  ""
+				data1[pipe[0].strip()] =  {}
 
 		# search the stopped container 
 		for k , v in data1.items():
+				
+				current_state = v.get("state", "")
+
 				if not previous :
-					if "Exited" in v.get("state"):
+					if "Exited" in current_state:
 						print(f"[ALERT] : {k} has stopped!")
 						send_discord_alert(k, v, "ALERT")
 				else :
-					if v.get("state") != previous.get('state') :
-						if "Exited" in v.get("state") :
+					if k not in previous :
+						if "Exited" in current_state :
+							print(f"[ALERT] : {k} has stopped (newly detected)!")
+							send_discord_alert(k, v, "ALERT")
+						elif "Up" in current_state:
+							print(f"[SUCCESS] : {k} is UP (newly detected)!")
+							send_discord_alert(k, v, "SUCCESS")
+						continue
+				
+					if current_state != previous[k].get('state', "") :
+						if "Exited" in current_state :
 							print(f"[ALERT] : {k} has stopped!")
-							send_discord_alert(k, v.get("state"), "ALERT")
-						elif "Up" in v.get("state") :
+							send_discord_alert(k, current_state, "ALERT")
+						elif "Up" in current_state :
 							print(f"[SUCCESS] : {k} is UP!")
-							send_discord_alert(k, v.get("state"), "SUCCESS")
+							send_discord_alert(k, current_state, "SUCCESS")
 						else :
-							print(f"[WARNING] : {k} -> { v.get('state') }")
-							send_discord_alert(k, v.get("state"), "SUCCESS")
+							print(f"[WARNING] : {k} -> { current_state }")
+							send_discord_alert(k, current_state, "WARNING")
+
 		previous = data1
 		write_logs(logs, ps.stdout)
 		write_logs(logs, ps.stderr)

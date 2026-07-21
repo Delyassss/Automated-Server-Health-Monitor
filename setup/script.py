@@ -7,14 +7,23 @@ import subprocess
 from datetime import datetime
 from dotenv import load_dotenv
 import time
+import json
 
 def print_sep():
 	print("_" * 100 + '\n')
 def print_time() :
 	return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
 def docker_logs_header(logs) :
-	print(f"====================================================\n{print_time()}\nRunning Containers\n====================================================", file=logs)   
+	print(f"====================================================\n[{print_time()}] 	[Containers -a]\n====================================================", file=logs)   
+def header(where) :
+	print("\n" + "="*40, file=where)
+	print("CONTAINER MONITOR STARTED" , file=where)
+	print("="*40 + "\n" , file=where)
 
+
+
+
+	
 load_dotenv()  # Load variables from .env file into the environment
 to_gb = 1024 ** 3
 discord__url = os.getenv('dis_url')
@@ -66,24 +75,30 @@ def sys_usage(sys_cnf) :
 def get_docker_status(logs) -> bool :
 
 	try :
-		ps = subprocess.run(['docker' , "info"], capture_output=True, text=True, check=True, timeout=10)
-		docker_logs_header(logs)
-		logs.write(ps.stdout)
-		logs.write(ps.stderr)
+		ps = subprocess.run(['docker' , "info" , "--format" , "{{json .}}"], capture_output=True, text=True, check=True, timeout=10)
+		in_json = json.loads(ps.stdout)
+		print(
+    		f"\n{'='*30}\n"
+    		f"DOCKER SYSTEM STATUS\n"
+    		f"{'='*30}\n"
+    		f"Server Version: {in_json.get('ServerVersion', 'N/A')}\n"
+    		f"Running Containers: {in_json.get('ContainersRunning', 0)}\n"
+    		f"Paused Containers: {in_json.get('ContainersPaused', 0)}\n"
+    		f"Stopped Containers: {in_json.get('ContainersStopped', 0)}\n"
+    		f"{'='*30}\n" , file=logs
+			)
+		logs.write(f"[ERROR] {ps.stderr}")
 		return True
 
 	except subprocess.CalledProcessError:
 			print("Error: Docker is not installed or not running.")
-			docker_logs_header(logs)
 			logs.write(f"FAILURE: Docker daemon error\n{e.stderr}\n")
 			return False
 	except FileNotFoundError :
 			print("✗ Error: Docker CLI not found. Is Docker installed?")
-			docker_logs_header(logs)
 			return False
 	except subprocess.TimeoutExpired : 
 			print("✗ Error: Docker daemon is unresponsive (timeout).")
-			docker_logs_header(logs)
 			logs.write("FAILURE: Docker daemon timeout\n{e.stderr}")
 			return False
 	
@@ -204,6 +219,8 @@ with open("./setup/docker.logs", 'a') as logs:
 			equal = line.split('=')
 			if (len(equal) == 2) :
 				config_dic[equal[0].strip()] =  equal[1].strip()
+		header(sys.stdout)
+		header(logs)
 
 		if "--ci" in sys.argv :
 			for i in range(4) :

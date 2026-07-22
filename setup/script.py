@@ -8,22 +8,31 @@ from datetime import datetime
 from dotenv import load_dotenv
 import time
 import json
+import getpass
 
 def print_sep():
 	print("_" * 100 + '\n')
+
 def print_time() :
 	return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
 def docker_logs_header(logs) :
 	print(f"====================================================\n[{print_time()}] 	[Containers -a]\n====================================================", file=logs)   
 def header(where) :
 	print("\n" + "="*40, file=where)
 	print("CONTAINER MONITOR STARTED" , file=where)
 	print("="*40 + "\n" , file=where)
+def print_nested(data , redir , indent = 0) :
+	for k , v in data.items() : 
+		
+		print(" " * indent + str(k), end="" , file=redir)
+		if isinstance(v, dict) :
+			print(file=redir);
+			print_nested(v, redir , indent = indent + 1)
+		else :
+			print(f": {v}" , file = redir)
 
 
-
-
-	
 load_dotenv()  # Load variables from .env file into the environment
 to_gb = 1024 ** 3
 discord__url = os.getenv('dis_url')
@@ -107,7 +116,10 @@ def get_docker_status(logs) -> bool :
 
 def write_logs(file, what_to_write) :
 		docker_logs_header(file)
-		file.write(what_to_write)
+		if (isinstance(what_to_write, dict)) :
+			print_nested(what_to_write, file)
+		else :
+			file.write(what_to_write)
 
 
 
@@ -126,6 +138,7 @@ def docker_monitoring(logs, data1, previous) :
 		ps = subprocess.run(["docker" , "ps" , "-a" , "--format", "{{.Names}} | {{.State}}"], capture_output=True, text=True, check=True)
 		if not ps.stdout.strip() :
 			raise ValueError("[Error] probably there is no data ! check if you have at least one container")
+		username = getpass.getuser()
 		docker_logs_header(sys.stdout)
 		print(ps.stdout) 
 		# i need to store the running container
@@ -136,7 +149,8 @@ def docker_monitoring(logs, data1, previous) :
 			pipe = line.split('|') # Returns a flat list: ['key', 'value'] or ['key']
 			if len(pipe) == 2 :
 				data1[pipe[0].strip()] = { "state" : pipe[1],
-							  				"last_alert" : get_seconds()
+							  				"last_alert" : print_time() ,
+											  "Host" 	 : username
 										}
 			else :
 				data1[pipe[0].strip()] =  {}
@@ -178,7 +192,7 @@ def docker_monitoring(logs, data1, previous) :
 		# 	THE CORRECT: Modifies the actual dictionary object passed in
 		previous.clear()
 		previous.update(data1)
-		write_logs(logs, ps.stdout)
+		write_logs(logs, data1)
 		if ps.stderr :
 			write_logs(logs, ps.stderr)
 

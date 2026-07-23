@@ -231,7 +231,7 @@ def monitoring(config_dic, logs, data1, previous) :
 		os.system("clear")
 
 
-with open("./setup/docker.logs", 'a') as logs:
+with open("./setup/docker.log", 'a') as logs:
 	with open("./setup/usage.conf", 'r') as config :
 
 		data1 = {}

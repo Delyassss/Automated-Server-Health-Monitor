@@ -11,7 +11,9 @@ import json
 import getpass
 
 def print_sep():
-	print("_" * 100 + '\n')
+    # Gets current terminal width, defaults to 80 if unknown
+    width = os.get_terminal_size().columns
+    print(f"\n{'=' * width}\n")
 
 def print_time() :
 	return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -114,7 +116,7 @@ def get_docker_status(logs) -> bool :
 	
 
 
-def write_logs(file, what_to_write) :
+def write_docker_logs(file, what_to_write) :
 		docker_logs_header(file)
 		if (isinstance(what_to_write, dict)) :
 			print_nested(what_to_write, file)
@@ -128,7 +130,7 @@ def write_logs(file, what_to_write) :
 
 
 
-def docker_monitoring(logs, data1, previous) :
+def docker_monitoring(logs, data1, previous , alerts) :
 	# docker info ...
 	if get_docker_status(logs) == False :
 		return
@@ -164,27 +166,33 @@ def docker_monitoring(logs, data1, previous) :
 					print("HAHAHAH EMPTY PREVIOUS")
 					if "exited" in current_state:
 						print(f"[ALERT] : {k} has stopped!")
-						send_discord_alert(k, v, "ALERT")
+						send_discord_alert(k, current_state, "ALERT")
+						write_alerts_logs(k, current_state, "ALERT", alerts)
 				else :
 					if k not in previous :
 						if "exited" in current_state :
 							print(f"[ALERT] : {k} has stopped (newly detected)!")
-							send_discord_alert(k, v, "ALERT")
+							send_discord_alert(k, current_state, "ALERT")
+							write_alerts_logs(k, current_state, "ALERT", alerts)
 						elif "running" in current_state:
 							print(f"[SUCCESS] : {k} is UP (newly detected)!")
-							send_discord_alert(k, v, "SUCCESS")
-						continue
+							send_discord_alert(k, current_state, "SUCCESS")
+							write_alerts_logs(k, current_state, "SUCCESS", alerts)
+						continue 
 				
 					if current_state != previous[k].get('state', "") :
 						if "exited" in current_state :
 							print(f"[ALERT] : {k} has stopped!")
 							send_discord_alert(k, current_state, "ALERT")
+							write_alerts_logs(k, current_state, "ALERT", alerts)
 						elif "running" in current_state :
 							print(f"[SUCCESS] : {k} is UP!")
 							send_discord_alert(k, current_state, "SUCCESS")
+							write_alerts_logs(k, current_state, "SUCCESS", alerts)
 						else :
 							print(f"[WARNING] : {k} -> { current_state }")
 							send_discord_alert(k, current_state, "WARNING")
+							write_alerts_logs(k, current_state, "WARNING", alerts)
 
 
 		#	previous = data1.copy() # Using previous = data1 will not work correctly because it creates a reference, not a copy.
@@ -192,9 +200,9 @@ def docker_monitoring(logs, data1, previous) :
 		# 	THE CORRECT: Modifies the actual dictionary object passed in
 		previous.clear()
 		previous.update(data1)
-		write_logs(logs, data1)
+		write_docker_logs(logs, data1)
 		if ps.stderr :
-			write_logs(logs, ps.stderr)
+			write_docker_logs(logs, ps.stderr)
 
 
 
@@ -223,34 +231,40 @@ def send_discord_alert(key, value, type) :
 	except requests.exceptions.RequestException as e :
 			print("Request Failed : " , e )
 
+def write_alerts_logs(key, value, type, alerts) :
+	message = f"[{type}] {print_time()} 🚨 {key} : {value}" 
+	print(message , file=alerts)
+	print_sep()
+	
 
-def monitoring(config_dic, logs, data1, previous) :
+def monitoring(config_dic, logs, data1, previous, alerts) :
 		sys_usage(config_dic)
-		docker_monitoring(logs, data1, previous)
+		docker_monitoring(logs, data1, previous, alerts)
 		time.sleep(4)
 		os.system("clear")
 
 
 with open("./setup/docker.log", 'a') as logs:
 	with open("./setup/usage.conf", 'r') as config :
+		with open("./setup/alerts.log", 'a') as  alerts :
+			data1 = {}
+			previous = {}
+			config_dic = {}
+			for line in config :
+				# Strip whitespace (including newlines) from the line
+				line = line.strip()
+				if not line :
+					continue
+				equal = line.split('=')
+				if (len(equal) == 2) :
+					config_dic[equal[0].strip()] =  equal[1].strip()
+			header(sys.stdout)
+			header(logs)
+			header(alerts)
 
-		data1 = {}
-		previous = {}
-		config_dic = {}
-		for line in config :
-			# Strip whitespace (including newlines) from the line
-			line = line.strip()
-			if not line :
-				continue
-			equal = line.split('=')
-			if (len(equal) == 2) :
-				config_dic[equal[0].strip()] =  equal[1].strip()
-		header(sys.stdout)
-		header(logs)
-
-		if "--ci" in sys.argv :
-			for i in range(4) :
-				monitoring(config_dic, logs , data1, previous)
-		else :
-			while True :
-				monitoring(config_dic, logs , data1, previous)
+			if "--ci" in sys.argv :
+				for i in range(4) :
+					monitoring(config_dic, logs , data1, previous, alerts)
+			else :
+				while True :
+					monitoring(config_dic, logs , data1, previous, alerts)

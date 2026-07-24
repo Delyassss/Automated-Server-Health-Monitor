@@ -12,8 +12,11 @@ import getpass
 
 def print_sep():
     # Gets current terminal width, defaults to 80 if unknown
-    width = os.get_terminal_size().columns
-    print(f"\n{'=' * width}\n")
+		try :
+			width = os.get_terminal_size().columns
+		except Exception :
+			width = 80
+		print(f"\n{'=' * width}\n")
 
 def print_time() :
 	return datetime.now().strftime("%Y-%m-%d %H:%M:%S")

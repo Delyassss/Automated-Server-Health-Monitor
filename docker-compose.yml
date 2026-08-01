@@ -1,0 +1,15 @@
+version: '3'
+
+
+service :
+  AserverHc : 
+      container_name : AserverHc
+      image : monitor
+      build : ./
+      restart : on-failure
+      env :
+        - .env
+      volumes :
+        - /var/run:/var/run/:ro   
+      
+

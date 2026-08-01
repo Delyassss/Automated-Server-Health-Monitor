@@ -11,7 +11,12 @@ import json
 import getpass
 
 def print_sep():
-	print("_" * 100 + '\n')
+    # Gets current terminal width, defaults to 80 if unknown
+		try :
+			width = os.get_terminal_size().columns
+		except Exception :
+			width = 80
+		print(f"\n{'=' * width}\n")
 
 def print_time() :
 	return datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -27,7 +32,7 @@ def print_nested(data , redir , indent = 0) :
 		
 		print(" " * indent + str(k), end="" , file=redir)
 		if isinstance(v, dict) :
-			print(file=redir);
+			print(file=redir)
 			print_nested(v, redir , indent = indent + 1)
 		else :
 			print(f": {v}" , file = redir)
@@ -41,10 +46,10 @@ headers = {"Autorisation " : discord__token}
 last_alert = 0
 
 def get_seconds() :
-	seconds = time.time_ns() // 1_000_0000_000
+	seconds = time.time_ns() // 1_000_0000_000 # It removes the fractional part of the division.
 	return seconds
 	
-def sys_usage(sys_cnf) :
+def sys_usage(system_dict, sys_cnf) :
 		
 	print_sep()
 	print(f"TIME : [ {print_time()} ]\n")
@@ -57,7 +62,7 @@ def sys_usage(sys_cnf) :
 	print_sep()
 	if cpu_usage > float(max) :
 		print("[WARNING]: CPU usage is high")
-
+	system_dict["CPU"] =	{"usage ": cpu_usage}
 # RAM
 
 	RAM = psutil.virtual_memory()
@@ -65,21 +70,29 @@ def sys_usage(sys_cnf) :
 	ram_used = RAM.percent
 	ram_available = RAM.available / to_gb
 
-	print(f"TOTAL RAM : {ram_total:.2f} gb    |    RAM USAGE : {ram_used}%    |    RAM AVAILABLE : {ram_available:.2f} gb")
+	print(f"TOTAL RAM : {ram_total:.2f} GB    |    RAM USAGE : {ram_used}%    |    RAM AVAILABLE : {ram_available:.2f} GB")
 	max = sys_cnf.get("ram_limit", 85)
 	print_sep()
 	if ram_used > float(max) :
 		print("[WARNING]: RAM usage is high")
+	system_dict["RAM"] =	{"TOTAL" : f"{ram_total:.2f} GB",
+					   		 "USED" : f"{ram_used}%",
+							 "AVAILABLE" : f"{ram_available:.2f} GB"
+							}
 #DISK
 	DISK = psutil.disk_usage('/')
 	ds_total = DISK.total / to_gb
 	ds_used = DISK.percent
 	ds_available = DISK.free / to_gb
-	print(f"TOTAL DISK: {ds_total:.2f} gb    |    DISK USAGE : {ds_used}%    |    DISK AVAILABLE : {ds_available:.2f} gb")
+	print(f"TOTAL DISK: {ds_total:.2f} GB    |    DISK USAGE : {ds_used}%    |    DISK AVAILABLE : {ds_available:.2f} GB")
 	print_sep()
 	max = sys_cnf.get("disk_limit" , 90)
 	if ds_used > float(max) :
 		print("[WARNING]: DISK usage is high")
+	system_dict["DISK"] =	{"TOTAL" : f"{ds_total:.2f} GB",
+							 "USED"  : f"{ds_used}%" ,
+							 "AVAILABLE" : f"{ds_available:.2f} GB"
+							}
 
 def get_docker_status(logs) -> bool :
 
@@ -114,7 +127,7 @@ def get_docker_status(logs) -> bool :
 	
 
 
-def write_logs(file, what_to_write) :
+def write_docker_logs(file, what_to_write) :
 		docker_logs_header(file)
 		if (isinstance(what_to_write, dict)) :
 			print_nested(what_to_write, file)
@@ -128,7 +141,7 @@ def write_logs(file, what_to_write) :
 
 
 
-def docker_monitoring(logs, data1, previous) :
+def docker_monitoring(logs, docker_dict, docker_previous , alerts) :
 	# docker info ...
 	if get_docker_status(logs) == False :
 		return
@@ -148,53 +161,59 @@ def docker_monitoring(logs, data1, previous) :
 				continue 
 			pipe = line.split('|') # Returns a flat list: ['key', 'value'] or ['key']
 			if len(pipe) == 2 :
-				data1[pipe[0].strip()] = { "state" : pipe[1],
-							  				"last_alert" : print_time() ,
+				docker_dict[pipe[0].strip()] = { "State" : pipe[1],
+							  				"Last_alert" : print_time() ,
 											  "Host" 	 : username
 										}
 			else :
-				data1[pipe[0].strip()] =  {}
+				docker_dict[pipe[0].strip()] =  {}
 
 		# search the stopped container 
-		for k , v in data1.items():
+		for k , v in docker_dict.items():
 				
 				current_state = v.get("state", "")
 
-				if not previous :
-					print("HAHAHAH EMPTY PREVIOUS")
+				if not docker_previous :
+					print("HAHAHAH EMPTY docker_PREVIOUS")
 					if "exited" in current_state:
 						print(f"[ALERT] : {k} has stopped!")
-						send_discord_alert(k, v, "ALERT")
+						send_discord_alert(k, current_state, "ALERT")
+						write_alerts_logs(k, current_state, "ALERT", alerts)
 				else :
-					if k not in previous :
+					if k not in docker_previous :
 						if "exited" in current_state :
 							print(f"[ALERT] : {k} has stopped (newly detected)!")
-							send_discord_alert(k, v, "ALERT")
+							send_discord_alert(k, current_state, "ALERT")
+							write_alerts_logs(k, current_state, "ALERT", alerts)
 						elif "running" in current_state:
 							print(f"[SUCCESS] : {k} is UP (newly detected)!")
-							send_discord_alert(k, v, "SUCCESS")
-						continue
+							send_discord_alert(k, current_state, "SUCCESS")
+							write_alerts_logs(k, current_state, "SUCCESS", alerts)
+						continue 
 				
-					if current_state != previous[k].get('state', "") :
+					if current_state != docker_previous[k].get('state', "") :
 						if "exited" in current_state :
 							print(f"[ALERT] : {k} has stopped!")
 							send_discord_alert(k, current_state, "ALERT")
+							write_alerts_logs(k, current_state, "ALERT", alerts)
 						elif "running" in current_state :
 							print(f"[SUCCESS] : {k} is UP!")
 							send_discord_alert(k, current_state, "SUCCESS")
+							write_alerts_logs(k, current_state, "SUCCESS", alerts)
 						else :
 							print(f"[WARNING] : {k} -> { current_state }")
 							send_discord_alert(k, current_state, "WARNING")
+							write_alerts_logs(k, current_state, "WARNING", alerts)
 
 
-		#	previous = data1.copy() # Using previous = data1 will not work correctly because it creates a reference, not a copy.
-		#	but still won't work , because the = create a local previous .
+		#	docker_previous = docker_dict.copy() # Using docker_previous = docker_dict will not work correctly because it creates a reference, not a copy.
+		#	but still won't work , because the = create a local docker_previous .
 		# 	THE CORRECT: Modifies the actual dictionary object passed in
-		previous.clear()
-		previous.update(data1)
-		write_logs(logs, data1)
+		docker_previous.clear()
+		docker_previous.update(docker_dict)
+		write_docker_logs(logs, docker_dict)
 		if ps.stderr :
-			write_logs(logs, ps.stderr)
+			write_docker_logs(logs, ps.stderr)
 
 
 
@@ -223,34 +242,41 @@ def send_discord_alert(key, value, type) :
 	except requests.exceptions.RequestException as e :
 			print("Request Failed : " , e )
 
+def write_alerts_logs(key, value, type, alerts) :
+	message = f"[{type}] {print_time()} 🚨 {key} : {value}" 
+	print(message , file=alerts)
+	print_sep()
+	
 
-def monitoring(config_dic, logs, data1, previous) :
-		sys_usage(config_dic)
-		docker_monitoring(logs, data1, previous)
+def monitoring(system_dict, config_dic, logs, docker_dict, docker_previous, alerts) :
+		sys_usage(system_dict, config_dic)
+		docker_monitoring(logs, docker_dict, docker_previous, alerts)
 		time.sleep(4)
 		os.system("clear")
 
 
 with open("./setup/docker.log", 'a') as logs:
 	with open("./setup/usage.conf", 'r') as config :
+		with open("./setup/alerts.log", 'a') as  alerts :
+			docker_dict = {} # For Docker
+			docker_previous = {}
+			config_dic = {}
+			system_dict = {}
+			for line in config :
+				# Strip whitespace (including newlines) from the line
+				line = line.strip()
+				if not line :
+					continue
+				equal = line.split('=')
+				if (len(equal) == 2) :
+					config_dic[equal[0].strip()] =  equal[1].strip()
+			header(sys.stdout)
+			header(logs)
+			header(alerts)
 
-		data1 = {}
-		previous = {}
-		config_dic = {}
-		for line in config :
-			# Strip whitespace (including newlines) from the line
-			line = line.strip()
-			if not line :
-				continue
-			equal = line.split('=')
-			if (len(equal) == 2) :
-				config_dic[equal[0].strip()] =  equal[1].strip()
-		header(sys.stdout)
-		header(logs)
-
-		if "--ci" in sys.argv :
-			for i in range(4) :
-				monitoring(config_dic, logs , data1, previous)
-		else :
-			while True :
-				monitoring(config_dic, logs , data1, previous)
+			if "--ci" in sys.argv :
+				for i in range(4) :
+					monitoring(system_dict, config_dic, logs , docker_dict, docker_previous, alerts)
+			else :
+				while True :
+					monitoring(system_dict, config_dic, logs , docker_dict, docker_previous, alerts)

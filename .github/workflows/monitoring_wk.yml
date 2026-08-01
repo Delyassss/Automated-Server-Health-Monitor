@@ -23,9 +23,9 @@ jobs :
         run : cat ./setup/usage.conf
 
       - name : running
-        run : python ./setup/script.py --ci
+        run : python ./setup/script.py --ci # --ci run the other loop . avoid the endless while 
       - name : check_logs
-        run : cat ./setup/docker.log
+        run : cat ./setup/docker.log && cat ./setup/alerts.log
 
   two : 
     needs : one

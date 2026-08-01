@@ -25,7 +25,7 @@ jobs :
       - name : running
         run : python ./setup/script.py --ci
       - name : check_logs
-        run : cat ./setup/docker.logs
+        run : cat ./setup/docker.log
 
   two : 
     needs : one

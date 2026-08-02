@@ -20,12 +20,12 @@ jobs :
         run : python -m pip install --upgrade pip && pip install -r requirements.txt
 
       - name : check_config
-        run : cat ./setup/usage.conf
+        run : cat ./setup/conf/usage.conf
 
       - name : running
         run : python ./setup/script.py --ci # --ci run the other loop . avoid the endless while 
       - name : check_logs
-        run : cat ./setup/docker.log && cat ./setup/alerts.log
+        run : cat ./setup/logs/docker.log && cat ./setup/logs/alerts.log
 
   two : 
     needs : one
@@ -36,9 +36,31 @@ jobs :
         uses : actions/checkout@v4
 
       - name : build
-        run : docker build -t monitor .
+        run : docker build -t monitor . # the git cloud computer has docker so no need to install it 
       - name : start
-        run : docker run -d --name AserverHC  monitor --ci
+        run : docker run --name AserverHC  monitor --ci
+      - name : exit_status # i know it useless but worth for me to keep it 
+        run : if [ $? -ne 0 ]; then exit 1; fi
+
+
+
+  three : 
+    needs : two
+    runs-on : ubuntu-latest
+
+    steps : 
+      - name : repo_check3
+        uses : actions/checkout@v4
+      - name : build
+        run : docker compose build 
+      - name : start 
+        run : docker compose run  AserverHC  --ci
+      - name : exit_status # SAME HERE
+        run : if [ $? -ne 0 ]; then exit 1; fi
+
+
+
+
 
 
 

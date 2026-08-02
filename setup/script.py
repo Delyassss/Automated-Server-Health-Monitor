@@ -22,9 +22,9 @@ def monitoring(system_dict, config_dic, logs, docker_dict, docker_previous, aler
 		os.system("clear")
 
 
-with open("./setup/docker.log", 'a') as logs:
-	with open("./setup/usage.conf", 'r') as config :
-		with open("./setup/alerts.log", 'a') as  alerts :
+with open("./setup/logs/docker.log", 'a') as logs:
+	with open("./setup/conf/usage.conf", 'r') as config :
+		with open("./setup/logs/alerts.log", 'a') as  alerts :
 			docker_dict = {} # For Docker
 			docker_previous = {}
 			config_dic = {}
@@ -42,8 +42,17 @@ with open("./setup/docker.log", 'a') as logs:
 			header(alerts)
 
 			if "--ci" in sys.argv :
-				for i in range(4) :
-					monitoring(system_dict, config_dic, logs , docker_dict, docker_previous, alerts)
+				for i in range(4):
+					try:
+						monitoring(system_dict, config_dic, logs, docker_dict, docker_previous, alerts)
+					except Exception as e:
+						print(f"Monitoring failed on iteration {i}: {e}")
+						sys.exit(1)
 			else :
 				while True :
-					monitoring(system_dict, config_dic, logs , docker_dict, docker_previous, alerts)
+					try :
+						monitoring(system_dict, config_dic, logs , docker_dict, docker_previous, alerts)
+					except Exception as e :
+						print(f"Monitoring failed : {e}")
+						sys.exit(1)
+			

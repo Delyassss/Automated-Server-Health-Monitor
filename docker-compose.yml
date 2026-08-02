@@ -1,15 +1,15 @@
 version: '3'
 
-
-service :
-  AserverHc : 
+services :
+    AserverHc : 
       container_name : AserverHc
       image : monitor
       build : ./
       restart : on-failure
-      env :
+      env_file :
         - .env
       volumes :
         - /var/run:/var/run/:ro   
+      tty : true # since you used os.clear() to clear the ternminal you need to give the container a fake terminal to talk to
       
 

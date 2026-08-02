@@ -54,7 +54,7 @@ jobs :
       - name : build
         run : docker compose build 
       - name : start 
-        run : docker compose run  AserverHC  --ci
+        run : docker compose run  AserverHc  --ci
       - name : exit_status # SAME HERE
         run : if [ $? -ne 0 ]; then exit 1; fi
 

@@ -5,7 +5,7 @@ def send_discord_alert(key, value, type) :
 		print("[POST REQUEST] ...")
 		message = f"[{type}] {print_time()} 🚨 {key} : {value}"
 		in_json = {'content' : message}
-		response = requests.post(discord__url, in_json, timeout=2, headers=headers);
+		response = requests.post(discord__url, in_json, timeout=2, headers=headers)
 		print(f"[REQUEST STATUS]   {response.status_code}")
 		if response.text :
 			print(f"[REQUEST RESPONSE] {response.text} ")

@@ -14,6 +14,7 @@ import requests
 
 
 
+
 def print_sep():
     # Gets current terminal width, defaults to 80 if unknown
 		try :

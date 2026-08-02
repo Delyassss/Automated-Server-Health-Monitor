@@ -9,10 +9,10 @@ from dotenv import load_dotenv
 import time
 import json
 import getpass
-from docker_monitoring import *
-from sys_usage import *
 from utils import *
+from docker_monitoring import *
 from discord import *
+from sys_usage import *
 
 
 def monitoring(system_dict, config_dic, logs, docker_dict, docker_previous, alerts) :

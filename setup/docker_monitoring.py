@@ -1,4 +1,6 @@
 from utils import *
+from discord import *
+
 
 
 
@@ -65,7 +67,7 @@ def docker_monitoring(logs, docker_dict, docker_previous , alerts) :
 		# search the stopped container 
 		for k , v in docker_dict.items():
 				
-				current_state = v.get("state", "")
+				current_state = v.get("State", "")
 
 				if not docker_previous :
 					print("HAHAHAH EMPTY docker_PREVIOUS")
@@ -85,7 +87,7 @@ def docker_monitoring(logs, docker_dict, docker_previous , alerts) :
 							write_alerts_logs(k, current_state, "SUCCESS", alerts)
 						continue 
 				
-					if current_state != docker_previous[k].get('state', "") :
+					if current_state != docker_previous[k].get('State', "") :
 						if "exited" in current_state :
 							print(f"[ALERT] : {k} has stopped!")
 							send_discord_alert(k, current_state, "ALERT")
@@ -120,6 +122,7 @@ def docker_monitoring(logs, docker_dict, docker_previous , alerts) :
 	except Exception as e :
 			print(e)
 			return
+
 def write_docker_logs(file, what_to_write) :
 		docker_logs_header(file)
 		if (isinstance(what_to_write, dict)) :

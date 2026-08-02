@@ -14,3 +14,5 @@ def send_discord_alert(key, value, type) :
 			print("[Request Failed] timed out !")
 	except requests.exceptions.RequestException as e :
 			print("Request Failed : " , e )
+	except Exception as e : 
+			print("Request Failed : " , e )

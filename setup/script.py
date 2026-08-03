@@ -9,11 +9,15 @@ from dotenv import load_dotenv
 import time
 import json
 import getpass
+import threading
+from flask import Flask, request, render_template
 from utils import *
 from docker_monitoring import *
 from discord import *
 from sys_usage import *
 
+
+lock = threading.Lock()
 
 def monitoring(system_dict, config_dic, logs, docker_dict, docker_previous, alerts) :
 		sys_usage(system_dict, config_dic)
@@ -21,6 +25,24 @@ def monitoring(system_dict, config_dic, logs, docker_dict, docker_previous, aler
 		time.sleep(4)
 		os.system("clear")
 
+def thread_monitor() :
+		if "--ci" in sys.argv :
+				for i in range(4):
+					try:
+						monitoring(system_dict, config_dic, logs, docker_dict, docker_previous, alerts)
+					except Exception as e:
+						print(f"Monitoring failed on iteration {i}: {e}")
+						sys.exit(1)
+			else :
+				while True :
+					try :
+						monitoring(system_dict, config_dic, logs , docker_dict, docker_previous, alerts)
+					except Exception as e :
+						print(f"Monitoring failed : {e}")
+						sys.exit(1)
+def flask_server() :
+	app = Flask(__name__, template_folder="design")
+	
 
 with open("./setup/logs/docker.log", 'a') as logs:
 	with open("./setup/conf/usage.conf", 'r') as config :
@@ -40,6 +62,25 @@ with open("./setup/logs/docker.log", 'a') as logs:
 			header(sys.stdout)
 			header(logs)
 			header(alerts)
+			threads = []
+			
+			t = threading.Thread(target=thread_monitor)
+			threads.append(t)
+			t = threading.Thread(target=flask_server)
+			threads.append(t)
+
+			for t in threads :
+				t.start()
+			for t in threads :
+				t.join()
+
+
+
+
+
+
+
+
 
 			if "--ci" in sys.argv :
 				for i in range(4):

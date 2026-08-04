@@ -49,6 +49,8 @@ to_gb = 1024 ** 3
 discord__url = os.getenv('dis_url')
 discord__token = os.getenv('dis_token')
 headers = {"Autorisation " : discord__token}
+Flask_port=int(os.getenv('flask_port'))
+
 
 
 

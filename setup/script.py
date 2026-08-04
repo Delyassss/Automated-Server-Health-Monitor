@@ -27,21 +27,35 @@ def monitoring(system_dict, config_dic, logs, docker_dict, docker_previous, aler
 
 def thread_monitor() :
 		if "--ci" in sys.argv :
-				for i in range(4):
-					try:
-						monitoring(system_dict, config_dic, logs, docker_dict, docker_previous, alerts)
-					except Exception as e:
-						print(f"Monitoring failed on iteration {i}: {e}")
-						sys.exit(1)
-			else :
-				while True :
-					try :
-						monitoring(system_dict, config_dic, logs , docker_dict, docker_previous, alerts)
-					except Exception as e :
-						print(f"Monitoring failed : {e}")
-						sys.exit(1)
+			for i in range(4):
+				try:
+					monitoring(system_dict, config_dic, logs, docker_dict, docker_previous, alerts)
+				except Exception as e:
+					print(f"Monitoring failed on iteration {i}: {e}")
+					sys.exit(1)
+		else :
+			while True :
+				try :
+					monitoring(system_dict, config_dic, logs , docker_dict, docker_previous, alerts)
+				except Exception as e :
+					print(f"Monitoring failed : {e}")
+					sys.exit(1)
+
+
 def flask_server() :
 	app = Flask(__name__, template_folder="design")
+	@app.route('/', methods=['GET'])
+	def info() :
+		if request.method == 'GET' :
+			return render_template('index.html')
+		return render_template('index.html')
+	if (1024 < Flask_port < 65536) :
+		app.run(host='0.0.0.0', port=(Flask_port), debug=True, use_reloader=False)
+	else :
+		app.run(host='0.0.0.0', debug=True , use_reloader=False)
+
+
+
 	
 
 with open("./setup/logs/docker.log", 'a') as logs:
@@ -73,27 +87,3 @@ with open("./setup/logs/docker.log", 'a') as logs:
 				t.start()
 			for t in threads :
 				t.join()
-
-
-
-
-
-
-
-
-
-			if "--ci" in sys.argv :
-				for i in range(4):
-					try:
-						monitoring(system_dict, config_dic, logs, docker_dict, docker_previous, alerts)
-					except Exception as e:
-						print(f"Monitoring failed on iteration {i}: {e}")
-						sys.exit(1)
-			else :
-				while True :
-					try :
-						monitoring(system_dict, config_dic, logs , docker_dict, docker_previous, alerts)
-					except Exception as e :
-						print(f"Monitoring failed : {e}")
-						sys.exit(1)
-			

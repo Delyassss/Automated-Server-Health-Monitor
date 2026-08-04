@@ -13,5 +13,7 @@ services :
         - /usr/bin/docker:/usr/bin/docker:ro
       tty : true # since you used os.clear() to clear the ternminal you need to give the container a fake terminal to talk to
       #user : root   # cancelled for now Until some we find some permission probs
-    
+      ports : 
+        - "5000:5000"
+        - "${flask_port}:${flask_port}"
 

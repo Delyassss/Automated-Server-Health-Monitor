@@ -47,8 +47,8 @@ def flask_server() :
 	@app.route('/', methods=['GET'])
 	def info() :
 		if request.method == 'GET' :
-			return render_template('index.html')
-		return render_template('index.html')
+			return render_template('index.html', system_dict=system_dict, docker_dict=docker_dict)
+		return render_template('index.html', system_dict=system_dict, docker_dict=docker_dict)
 	if (1024 < Flask_port < 65536) :
 		app.run(host='0.0.0.0', port=(Flask_port), debug=True, use_reloader=False)
 	else :

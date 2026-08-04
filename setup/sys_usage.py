@@ -15,7 +15,7 @@ def sys_usage(system_dict, sys_cnf) :
 	print_sep()
 	if cpu_usage > float(max) :
 		print("[WARNING]: CPU usage is high")
-	system_dict["CPU"] =	{"usage ": cpu_usage}
+	system_dict["CPU"] =	{"USED": f"{cpu_usage}%"}
 # RAM
 
 	RAM = psutil.virtual_memory()

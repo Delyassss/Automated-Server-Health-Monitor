@@ -57,7 +57,7 @@ def docker_monitoring(logs, docker_dict, docker_previous , alerts) :
 				continue 
 			pipe = line.split('|') # Returns a flat list: ['key', 'value'] or ['key']
 			if len(pipe) == 2 :
-				docker_dict[pipe[0].strip()] = { "State" : pipe[1],
+				docker_dict[pipe[0].strip()] = { "State" : pipe[1].strip(),
 							  				"Last_alert" : print_time() ,
 											  "Host" 	 : username
 										}

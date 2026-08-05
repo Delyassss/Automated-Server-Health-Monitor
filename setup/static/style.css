@@ -6,6 +6,7 @@ html
 }
 h1
 {
+    color : whitesmoke;
     text-align: center;
     font-size: 30px;
     font-weight: bold;
@@ -13,12 +14,25 @@ h1
 }
 h2
 {
+    color :chocolate;
     text-align: center;
     font-size: 20px;
     font-weight: bold;
     font-style: normal;
+    
 }
-
+table 
+{
+    color: whitesmoke;
+    table-layout: auto;
+}
+thead
+{
+    color :blanchedalmond;
+}
+tr
+{
+}
 .parent-div
 {
 

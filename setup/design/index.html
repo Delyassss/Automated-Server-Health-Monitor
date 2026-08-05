@@ -7,65 +7,72 @@
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 <body>
-    <div class="max-w-7xl mx-auto p-8">
-        <h1 class="p-8">AserverHC Dashboard</h1>
-    <div class="flex gap-8 p-8 justify-center">
-    <div class="w-full bg-gray-800 rounded-xl p-8">
-        <section>
-            <h2>System Information</h2>
-            <table class = "w-full">
+    <main  class="max-w-7xl mx-auto p-8">
+        <header>
+            <h1 class="p-8">AserverHC Dashboard</h1>
+        </header>
+    <div class="flex gap-8 p-8">
+        <section  class="flex-1 bg-gray-800 rounded-xl p-6 shadow-lg">
+            <h2 class = "mb-6">System Information</h2>
+            <table class="w-full table-auto">
+                <thead class="bg-gray-700 uppercase">
                 <tr>
-                    <th>Component</th>
-                    <th>Total</th>
-                    <th>Used</th>
-                    <th>Free</th>
+                    <th class="px-4 py-3">Component</th>
+                    <th class="px-4 py-3">Total</th>
+                    <th class="px-4 py-3">Used</th>
+                    <th class="px-4 py-3">Free</th>
                 </tr>
+                </thead>
+                <tbody>
             {% for key , value in system_dict.items() %}
                 <tr>
-                    <td>{{key}}</td>
-                    <td>{{value.get("TOTAL", "N/A")}}</td>
-                    <td>{{value.get("USED", "N/A")}}</td>
-                    <td>{{value.get("AVAILABLE", "N/A")}}</td>
+                    <td class="px-4 py-3">{{key}}</td>
+                    <td class="px-4 py-3">{{value.get("TOTAL", "N/A")}}</td>
+                    <td class="px-4 py-3">{{value.get("USED", "N/A")}}</td>
+                    <td class="px-4 py-3">{{value.get("AVAILABLE", "N/A")}}</td>
                 </tr>
             {% endfor %}
+                </tbody>
             </table>
         </section>
-    </div>
-    <div class="w-full bg-gray-800 rounded-xl p-8">
-        <section>
-            <h2>Containers</h2>
-            <table class="w-full">
+
+        <section class="flex-1 bg-gray-800 rounded-xl p-6 shadow-lg">
+            <h2 class="mb-6">Containers</h2>
+            <table class="w-full table-auto">
+                <thead class="bg-gray-700 uppercase">
                 <tr>
-                    <th>Container</th>
-                    <th>Status</th>
-                    <th>Last alert</th>
-                    <th>Host</th>
+                    <th class="px-4 py-3">Container</th>
+                    <th class="px-4 py-3">Status</th>
+                    <th class="px-4 py-3">Last alert</th>
+                    <th class="px-4 py-3">Host</th>
                 </tr>
+                </thead>
+                <tbody>
             {% for key , value in docker_dict.items() %}
             <tr>
-                <td>{{key}}</td>
+                <td class="px-4 py-3">{{key}}</td>
 
                 {% if value.get("State", "N/A") == "running" %}
-                    <td>🟢 running</td>
+                    <td class="px-4 py-3">🟢 running</td>
                 {% elif value.get("State", "N/A") == "paused" %}
-                    <td>🟠 paused</td>
+                    <td class="px-4 py-3">🟠 paused</td>
                 {% elif value.get("State", "N/A") == "restarting" %}
-                    <td>🟡 restarting</td>
+                    <td class="px-4 py-3">🟡 restarting</td>
                 {% elif value.get("State", "N/A") == "exited" %}
-                    <td>🔴 exited</td>
+                    <td class="px-4 py-3">🔴 exited</td>
                 {% else %}
-                    <td>🟣 {{ value.get("State", "N/A") }}</td>
+                    <td class="px-4 py-3">🟣 {{ value.get("State", "N/A") }}</td>
                 {% endif %}
 
-                <td>{{value.get("Last_alert", "N/A")}}</td> 
+                <td class="px-4 py-3">{{value.get("Last_alert", "N/A")}}</td> 
 
-                <td>{{value.get("Host", "N/A")}}</td>
+                <td class="px-4 py-3">{{value.get("Host", "N/A")}}</td>
             </tr>
             {% endfor %}
+                </tbody>
             </table>
         </section>
     </div>
-    </div>
-    </div>
+    </main>
 </body>
 </html>

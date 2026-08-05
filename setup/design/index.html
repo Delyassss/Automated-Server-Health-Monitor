@@ -4,14 +4,17 @@
     <title>AserverHc</title>
     <meta charset="UTF-8">
     <link rel="stylesheet" href="../static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 <body>
-    <h1>AserverHC Dashboard</h1>
-    <div>
+    <div class="max-w-7xl mx-auto p-8">
+        <h1 class="p-8">AserverHC Dashboard</h1>
+    <div class="flex gap-8 p-8 justify-center">
+    <div class="w-full bg-gray-800 rounded-xl p-8">
         <section>
-            <h2>System</h2>
-            <table style="width:100%">
-                <tr style="width: fit-content;">
+            <h2>System Information</h2>
+            <table class = "w-full">
+                <tr>
                     <th>Component</th>
                     <th>Total</th>
                     <th>Used</th>
@@ -28,38 +31,41 @@
             </table>
         </section>
     </div>
-    <section>
-        <h2>Containers</h2>
-        <table style="width:100%">
+    <div class="w-full bg-gray-800 rounded-xl p-8">
+        <section>
+            <h2>Containers</h2>
+            <table class="w-full">
+                <tr>
+                    <th>Container</th>
+                    <th>Status</th>
+                    <th>Last alert</th>
+                    <th>Host</th>
+                </tr>
+            {% for key , value in docker_dict.items() %}
             <tr>
-                <th>Container</th>
-                <th>Status</th>
-                <th>Last alert</th>
-                <th>Host</th>
+                <td>{{key}}</td>
+
+                {% if value.get("State", "N/A") == "running" %}
+                    <td>🟢 running</td>
+                {% elif value.get("State", "N/A") == "paused" %}
+                    <td>🟠 paused</td>
+                {% elif value.get("State", "N/A") == "restarting" %}
+                    <td>🟡 restarting</td>
+                {% elif value.get("State", "N/A") == "exited" %}
+                    <td>🔴 exited</td>
+                {% else %}
+                    <td>🟣 {{ value.get("State", "N/A") }}</td>
+                {% endif %}
+
+                <td>{{value.get("Last_alert", "N/A")}}</td> 
+
+                <td>{{value.get("Host", "N/A")}}</td>
             </tr>
-        {% for key , value in docker_dict.items() %}
-        <tr>
-            <td>{{key}}</td>
-
-            {% if value.get("State", "N/A") == "running" %}
-                <td>🟢 running</td>
-            {% elif value.get("State", "N/A") == "paused" %}
-                <td>🟠 paused</td>
-            {% elif value.get("State", "N/A") == "restarting" %}
-                <td>🟡 restarting</td>
-            {% elif value.get("State", "N/A") == "exited" %}
-                <td>🔴 exited</td>
-            {% else %}
-                <td>🟣 {{ value.get("State", "N/A") }}</td>
-            {% endif %}
-
-            <td>{{value.get("Last_alert", "N/A")}}</td> 
-
-            <td>{{value.get("Host", "N/A")}}</td>
-        </tr>
-        {% endfor %}
-        </table>
-
-    </section>
+            {% endfor %}
+            </table>
+        </section>
+    </div>
+    </div>
+    </div>
 </body>
 </html>

@@ -1,78 +1,94 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>AserverHc</title>
-    <meta charset="UTF-8">
-    <link rel="stylesheet" href="../static/style.css">
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+	<title>AserverHc</title>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="../static/style.css">
+	<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 <body>
-    <main  class="max-w-7xl mx-auto p-8">
-        <header>
-            <h1 class="p-8">AserverHC Dashboard</h1>
-        </header>
-    <div class="flex gap-8 p-8">
-        <section  class="flex-1 bg-gray-800 rounded-xl p-6 shadow-lg">
-            <h2 class = "mb-6">System Information</h2>
-            <table class="w-full table-auto">
-                <thead class="bg-gray-700 uppercase">
-                <tr>
-                    <th class="px-4 py-3">Component</th>
-                    <th class="px-4 py-3">Total</th>
-                    <th class="px-4 py-3">Used</th>
-                    <th class="px-4 py-3">Free</th>
-                </tr>
-                </thead>
-                <tbody>
-            {% for key , value in system_dict.items() %}
-                <tr>
-                    <td class="px-4 py-3">{{key}}</td>
-                    <td class="px-4 py-3">{{value.get("TOTAL", "N/A")}}</td>
-                    <td class="px-4 py-3">{{value.get("USED", "N/A")}}</td>
-                    <td class="px-4 py-3">{{value.get("AVAILABLE", "N/A")}}</td>
-                </tr>
-            {% endfor %}
-                </tbody>
-            </table>
-        </section>
+	<main  class="max-w-7xl mx-auto p-8">
+		<header>
+			<h1 class="p-8">AserverHC Dashboard</h1>
+		</header>
+		<div class = "w-full  p-6 bg-gray-800 rounded-xl shadow-lg  ">
 
-        <section class="flex-1 bg-gray-800 rounded-xl p-6 shadow-lg">
-            <h2 class="mb-6">Containers</h2>
-            <table class="w-full table-auto">
-                <thead class="bg-gray-700 uppercase">
-                <tr>
-                    <th class="px-4 py-3">Container</th>
-                    <th class="px-4 py-3">Status</th>
-                    <th class="px-4 py-3">Last alert</th>
-                    <th class="px-4 py-3">Host</th>
-                </tr>
-                </thead>
-                <tbody>
-            {% for key , value in docker_dict.items() %}
-            <tr>
-                <td class="px-4 py-3">{{key}}</td>
+			<section class="w-full flex gap-8 justify-center">
+				{% for key in system_dict.keys() %}
+					<div class="bg-gray-600 rounded-xl p-6 shadow-lg flex-1">
+					 <h2> {{key}} </h2>
+					 <h3 class="p-2"> {{system_dict[key]["USED"]}} </h3>
+					</div> 
+				{% endfor %}
+				<div class="bg-gray-600 rounded-xl p-6 shadow-lg">
+					<h2>Containers</h2>
+					<h3 class="p-2 whitespace-nowrap"> 🟢 {{running}}</h3>
+					<h3 class="whitespace-nowrap"> 🔴 {{stopped}} </h3>
+				</div>
+			</section>
+		</div>
+	<div class="flex gap-8 p-8">
+		<section  class="flex-1 bg-gray-800 rounded-xl p-6 shadow-lg">
+			<h2 class = "mb-6">System Information</h2>
+			<table class="w-full table-auto">
+				<thead class="bg-gray-700 uppercase">
+				<tr>
+					<th class="px-4 py-3 text-center">Component</th>
+					<th class="px-4 py-3 text-center">Total</th>
+					<th class="px-4 py-3 text-center">Used</th>
+					<th class="px-4 py-3 text-center">Free</th>
+				</tr>
+				</thead>
+				<tbody>
+			{% for key , value in system_dict.items() %}
+				<tr>
+					<td class="px-4 py-3 text-center">{{key}}</td>
+					<td class="px-4 py-3 text-center whitespace-nowrap">{{value.get("TOTAL", "N/A")}}</td>
+					<td class="px-4 py-3 text-center whitespace-nowrap">{{value.get("USED", "N/A")}}</td>
+					<td class="px-4 py-3 text-center whitespace-nowrap">{{value.get("AVAILABLE", "N/A")}}</td>
+				</tr>
+			{% endfor %}
+				</tbody>
+			</table>
+		</section>
 
-                {% if value.get("State", "N/A") == "running" %}
-                    <td class="px-4 py-3">🟢 running</td>
-                {% elif value.get("State", "N/A") == "paused" %}
-                    <td class="px-4 py-3">🟠 paused</td>
-                {% elif value.get("State", "N/A") == "restarting" %}
-                    <td class="px-4 py-3">🟡 restarting</td>
-                {% elif value.get("State", "N/A") == "exited" %}
-                    <td class="px-4 py-3">🔴 exited</td>
-                {% else %}
-                    <td class="px-4 py-3">🟣 {{ value.get("State", "N/A") }}</td>
-                {% endif %}
+		<section class="flex-1 bg-gray-800 rounded-xl p-6 shadow-lg">
+			<h2 class="mb-6">Containers</h2>
+			<table class="w-full table-auto">
+				<thead class="bg-gray-700 uppercase">
+				<tr>
+					<th class="px-4 py-3 text-center">Container</th>
+					<th class="px-4 py-3 text-center">Status</th>
+					<th class="px-4 py-3 text-center whitespace-nowrap">Last alert</th>
+					<th class="px-4 py-3 text-center">Host</th>
+				</tr>
+				</thead>
+				<tbody>
+			{% for key , value in docker_dict.items() %}
+			<tr>
+				<td class="px-4 py-3">{{key}}</td>
 
-                <td class="px-4 py-3">{{value.get("Last_alert", "N/A")}}</td> 
+				{% if value.get("State", "N/A") == "running" %}
+					<td class="px-4 py-3 text-center whitespace-nowrap">🟢 running</td>
+				{% elif value.get("State", "N/A") == "paused" %}
+					<td class="px-4 py-3 text-center whitespace-nowrap">🟠 paused</td>
+				{% elif value.get("State", "N/A") == "restarting" %}
+					<td class="px-4 py-3 text-center whitespace-nowrap">🟡 restarting</td>
+				{% elif value.get("State", "N/A") == "exited" %}
+					<td class="px-4 py-3 text-center whitespace-nowrap">🔴 exited</td>
+				{% else %}
+					<td class="px-4 py-3 text-center whitespace-nowrap">🟣 {{ value.get("State", "N/A") }}</td>
+				{% endif %}
 
-                <td class="px-4 py-3">{{value.get("Host", "N/A")}}</td>
-            </tr>
-            {% endfor %}
-                </tbody>
-            </table>
-        </section>
-    </div>
-    </main>
+				<td class="px-4 py-3 text-center whitespace-nowrap">{{value.get("Last_alert", "N/A")}}</td> 
+
+				<td class="px-4 py-3 text-center whitespace-nowrap">{{value.get("Host", "N/A")}}</td>
+			</tr>
+			{% endfor %}
+				</tbody>
+			</table>
+		</section>
+	</div>
+	</main>
 </body>
 </html>

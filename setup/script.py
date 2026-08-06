@@ -23,6 +23,8 @@ def monitoring(system_dict, config_dic, logs, docker_dict, docker_previous, aler
 		sys_usage(system_dict, config_dic)
 		docker_monitoring(logs, docker_dict, docker_previous, alerts)
 		time.sleep(4)
+		running=0
+		stopped=0
 		os.system("clear")
 
 def thread_monitor() :
@@ -44,11 +46,22 @@ def thread_monitor() :
 
 def flask_server() :
 	app = Flask(__name__, template_folder="design")
+
+
 	@app.route('/', methods=['GET'])
 	def info() :
+		running = 0
+		stopped = 0
+		for container in docker_dict.values():
+			if "running" in container.get("State", "").lower():
+				running += 1
+			else:
+				stopped += 1
+
 		if request.method == 'GET' :
-			return render_template('index.html', system_dict=system_dict, docker_dict=docker_dict)
-		return render_template('index.html', system_dict=system_dict, docker_dict=docker_dict)
+			return render_template('index.html', system_dict=system_dict, docker_dict=docker_dict, running=running, stopped=stopped)
+		return render_template('index.html', system_dict=system_dict, docker_dict=docker_dict, running=running, stopped=stopped)
+	
 	if (1024 < Flask_port < 65536) :
 		app.run(host='0.0.0.0', port=(Flask_port), debug=True, use_reloader=False)
 	else :
@@ -77,7 +90,7 @@ with open("./setup/logs/docker.log", 'a') as logs:
 			header(logs)
 			header(alerts)
 			threads = []
-			
+
 			t = threading.Thread(target=thread_monitor)
 			threads.append(t)
 			t = threading.Thread(target=flask_server)

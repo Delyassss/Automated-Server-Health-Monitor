@@ -53,7 +53,6 @@ Flask_port=int(os.getenv('flask_port'))
 
 
 
-
 def get_seconds() :
 	seconds = time.time_ns() // 1_000_0000_000 # It removes the fractional part of the division.
 	return seconds

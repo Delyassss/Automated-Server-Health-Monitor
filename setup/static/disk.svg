@@ -1,0 +1,18 @@
+<svg width="96" height="96" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g stroke="#d9860e" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+    <!-- outer panel -->
+    <rect x="16" y="14" width="64" height="68" rx="8"/>
+    <!-- corner screws -->
+    <circle cx="26" cy="24" r="1.5" fill="#d9860e"/>
+    <circle cx="70" cy="24" r="1.5" fill="#d9860e"/>
+    <circle cx="26" cy="72" r="1.5" fill="#d9860e"/>
+    <circle cx="70" cy="72" r="1.5" fill="#d9860e"/>
+    <!-- disk cylinder -->
+    <ellipse cx="48" cy="34" rx="16" ry="7"/>
+    <path d="M32 34 V46 C32 49.87 39.16 53 48 53 C56.84 53 64 49.87 64 46 V34"/>
+    <path d="M32 40 C32 43.87 39.16 47 48 47 C56.84 47 64 43.87 64 40" opacity="0.9"/>
+    <!-- read arm -->
+    <path d="M40 58 L58 46"/>
+    <circle cx="40" cy="58" r="3"/>
+  </g>
+</svg>

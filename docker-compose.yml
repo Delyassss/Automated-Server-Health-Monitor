@@ -16,4 +16,5 @@ services :
       ports : 
         - "5000:5000"
         - "${flask_port}:${flask_port}"
+        - "2222:22"
 

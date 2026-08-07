@@ -59,8 +59,8 @@ def flask_server() :
 				stopped += 1
 
 		if request.method == 'GET' :
-			return render_template('index.html', system_dict=system_dict, docker_dict=docker_dict, running=running, stopped=stopped)
-		return render_template('index.html', system_dict=system_dict, docker_dict=docker_dict, running=running, stopped=stopped)
+			return render_template('index.html', system_dict=system_dict, docker_dict=docker_dict, running=running, stopped=stopped, time=print_time())
+		return render_template('index.html', system_dict=system_dict, docker_dict=docker_dict, running=running, stopped=stopped, time=print_time())
 	
 	if (1024 < Flask_port < 65536) :
 		app.run(host='0.0.0.0', port=(Flask_port), debug=True, use_reloader=False)

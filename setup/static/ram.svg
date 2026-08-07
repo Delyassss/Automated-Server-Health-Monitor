@@ -1,0 +1,11 @@
+<svg width="96" height="96" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <g stroke="#d9860e" stroke-width="4" stroke-linejoin="round" stroke-linecap="round">
+    <!-- stick body -->
+    <path d="M12 32 H84 V62 H74 V70 H66 V62 H58 V70 H50 V62 H42 V70 H34 V62 H24 V70 H16 V62 H12 Z"/>
+    <!-- notches -->
+    <line x1="26" y1="32" x2="26" y2="50"/>
+    <line x1="38" y1="32" x2="38" y2="50"/>
+    <line x1="50" y1="32" x2="50" y2="50"/>
+    <line x1="62" y1="32" x2="62" y2="50"/>
+  </g>
+</svg>

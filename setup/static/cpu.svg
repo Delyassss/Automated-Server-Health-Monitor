@@ -1,0 +1,27 @@
+<svg width="96" height="96" viewBox="0 0 96 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- pins -->
+  <g stroke="#d9860e" stroke-width="4" stroke-linecap="round">
+    <line x1="30" y1="8" x2="30" y2="20"/>
+    <line x1="48" y1="8" x2="48" y2="20"/>
+    <line x1="66" y1="8" x2="66" y2="20"/>
+
+    <line x1="30" y1="76" x2="30" y2="88"/>
+    <line x1="48" y1="76" x2="48" y2="88"/>
+    <line x1="66" y1="76" x2="66" y2="88"/>
+
+    <line x1="8" y1="30" x2="20" y2="30"/>
+    <line x1="8" y1="48" x2="20" y2="48"/>
+    <line x1="8" y1="66" x2="20" y2="66"/>
+
+    <line x1="76" y1="30" x2="88" y2="30"/>
+    <line x1="76" y1="48" x2="88" y2="48"/>
+    <line x1="76" y1="66" x2="88" y2="66"/>
+  </g>
+
+  <!-- chip body -->
+  <rect x="20" y="20" width="56" height="56" rx="10" stroke="#d9860e" stroke-width="4"/>
+  <rect x="30" y="30" width="36" height="36" rx="6" stroke="#d9860e" stroke-width="4"/>
+
+  <!-- core circle -->
+  <circle cx="48" cy="48" r="9" stroke="#d9860e" stroke-width="4"/>
+</svg>

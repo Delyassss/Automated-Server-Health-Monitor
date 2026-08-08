@@ -47,6 +47,7 @@ def docker_monitoring(logs, docker_dict, docker_previous , alerts) :
 		ps = subprocess.run(["docker" , "ps" , "-a" , "--format", "{{.Names}} | {{.State}}"], capture_output=True, text=True, check=True)
 		if not ps.stdout.strip() :
 			raise ValueError("[Error] probably there is no data ! check if you have at least one container")
+		docker_dict.clear()
 		username = getpass.getuser()
 		docker_logs_header(sys.stdout)
 		print(ps.stdout) 

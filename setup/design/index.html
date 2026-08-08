@@ -7,18 +7,18 @@
 	<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
 <body>
-	<main  class="max-w-7xl mx-auto p-8">
-
+	<main  id ="body" class="max-w-7xl mx-auto p-8">
+		
 		<header>
 			<h1 class="p-8">AserverHC Dashboard</h1>
 		</header>
-
+		
 		<div class = "w-full  p-6 bg-gray-800 rounded-xl shadow-lg flex-1">
-
+			
 			<section class="w-full flex gap-9 justify-center">
 				{% for key in system_dict.keys() %}
-					<div class="  card-size w-full bg-gray-700 rounded-xl p-6 shadow-lg">
-						<span> 
+				<div class="  card-size w-full bg-gray-700 rounded-xl p-6 shadow-lg">
+					<span> 
 						<div class="icon-card p-6 justify-center">
 							{% if key == "CPU" %}
 							<img  src="../static/cpu.svg" alt="cpu">
@@ -29,9 +29,9 @@
 							{% endif %}
 						</div>
 						<h2 class = "text-4xl"> {{key}} </h2>
-						<h3 class="p-2 text-card"> {{system_dict[key]["USED"]}} </h3> 
+						<h3 class="{{key}}-used p-2 text-card"> {{system_dict[key]["USED"]}} </h3> 
 					</span>
-					</div> 
+				</div> 
 				{% endfor %}
 				<div class="card-size w-full bg-gray-700 rounded-xl p-6 shadow-lg">
 					<span>
@@ -40,81 +40,82 @@
 						</div>
 						<h2 class="text-4xl">Containers</h2>
 						{% if docker_dict %}
-							<h3 class="text-card p-2 whitespace-nowrap"> <span class="small">🟢</span> {{running}} <span class="small">🔴</span> {{stopped}} </h3>
-							<!-- <h3 class="text-card whitespace-nowrap"> 🔴 {{stopped}} </h3> -->
+						<h3 class="text-card p-2 whitespace-nowrap"> <span class="small" id="running">🟢 {{running}}</span> <span class="small" id ="stopped">🔴 {{stopped}}</span> </h3>
+						<!-- <h3 class="text-card whitespace-nowrap"> 🔴 {{stopped}} </h3> -->
 						{% else %}
-							<h3 class="text-card whitespace-nowrap"> N/A</h3>
+						<h3 class="text-card whitespace-nowrap "> N/A</h3>
 						{% endif %}
 					</span>
 				</div>
 			</section>
 		</div>
-	<div class="flex gap-8 p-8">
+		<div class="flex gap-8 p-8">
 		<section  class="flex-1 bg-gray-800 rounded-xl p-6 shadow-lg">
 			<h2 class = "mb-6">System Information</h2>
 			<table class="w-full table-auto">
 				<thead class="bg-gray-700 uppercase">
-				<tr class="border-b border-gray-700">
-					<th class="px-4 py-3 text-center">Component</th>
-					<th class="px-4 py-3 text-center">Total</th>
-					<th class="px-4 py-3 text-center">Used</th>
-					<th class="px-4 py-3 text-center">Free</th>
-				</tr>
+					<tr class="border-b border-gray-700">
+						<th class="px-4 py-3 text-center">Component</th>
+						<th class="px-4 py-3 text-center">Total</th>
+						<th class="px-4 py-3 text-center">Used</th>
+						<th class="px-4 py-3 text-center">Free</th>
+					</tr>
 				</thead>
 				<tbody>
-			{% for key , value in system_dict.items() %}
-				<tr class="hover:bg-gray-700 transition-colors border-b border-gray-700">
-					<td class="px-4 py-3 text-center">{{key}}</td>
-					<td class="px-4 py-3 text-center whitespace-nowrap">{{value.get("TOTAL", "N/A")}}</td>
-					<td class="px-4 py-3 text-center whitespace-nowrap">{{value.get("USED", "N/A")}}</td>
-					<td class="px-4 py-3 text-center whitespace-nowrap">{{value.get("AVAILABLE", "N/A")}}</td>
-				</tr>
-			{% endfor %}
+					{% for key , value in system_dict.items() %}
+					<tr class="hover:bg-gray-700 transition-colors border-b border-gray-700">
+						<td class="px-4 py-3 text-center">{{key}}</td>
+						<td class="px-4 py-3 text-center whitespace-nowrap {{key}}-total">{{value.get("TOTAL", "N/A")}}</td>
+						<td class="px-4 py-3 text-center whitespace-nowrap {{key}}-used">{{value.get("USED", "N/A")}}</td>
+						<td class="px-4 py-3 text-center whitespace-nowrap {{key}}-free">{{value.get("AVAILABLE", "N/A")}}</td>
+					</tr>
+					{% endfor %}
 				</tbody>
 			</table>
 		</section>
-
+		
 		<section class="flex-1 bg-gray-800 rounded-xl p-6 shadow-lg">
 			<h2 class="mb-6">Containers</h2>
 			<table class="w-full table-auto">
 				<thead class="bg-gray-700 uppercase">
-				<tr class="border-b border-gray-700">
-					<th class="px-4 py-3 text-center">Container</th>
-					<th class="px-4 py-3 text-center">Status</th>
-					<th class="px-4 py-3 text-center whitespace-nowrap">Last alert</th>
-					<th class="px-4 py-3 text-center">Host</th>
-				</tr>
+					<tr class="border-b border-gray-700">
+						<th class="px-4 py-3 text-center">Container</th>
+						<th class="px-4 py-3 text-center">Status</th>
+						<th class="px-4 py-3 text-center whitespace-nowrap">Last alert</th>
+						<th class="px-4 py-3 text-center">Host</th>
+					</tr>
 				</thead>
 				<tbody>
-			{% for key , value in docker_dict.items() %}
-			<tr class="hover:bg-gray-700 transition-colors border-b border-gray-700">
-				<td class="px-4 py-3">{{key}}</td>
-
-				{% if value.get("State", "N/A") == "running" %}
-					<td class="px-4 py-3 text-center whitespace-nowrap">🟢 running</td>
-				{% elif value.get("State", "N/A") == "paused" %}
-					<td class="px-4 py-3 text-center whitespace-nowrap">🟠 paused</td>
-				{% elif value.get("State", "N/A") == "restarting" %}
-					<td class="px-4 py-3 text-center whitespace-nowrap">🟡 restarting</td>
-				{% elif value.get("State", "N/A") == "exited" %}
-					<td class="px-4 py-3 text-center whitespace-nowrap">🔴 exited</td>
-				{% else %}
-					<td class="px-4 py-3 text-center whitespace-nowrap">🟣 {{ value.get("State", "N/A") }}</td>
-				{% endif %}
-
-				<td class="px-4 py-3 text-center whitespace-nowrap">{{value.get("Last_alert", "N/A")}}</td> 
-
-				<td class="px-4 py-3 text-center whitespace-nowrap">{{value.get("Host", "N/A")}}</td>
-			</tr>
-			{% endfor %}
+					{% for key , value in docker_dict.items() %}
+					<tr class="hover:bg-gray-700 transition-colors border-b border-gray-700" container_name="{{key}}">
+						<td class="px-4 py-3">{{key}}</td>
+						
+						{% if value.get("State", "N/A") == "running" %}
+						<td class="px-4 py-3 text-center whitespace-nowrap State">🟢 running</td>
+						{% elif value.get("State", "N/A") == "paused" %}
+						<td class="px-4 py-3 text-center whitespace-nowrap State">🟠 paused</td>
+						{% elif value.get("State", "N/A") == "restarting" %}
+						<td class="px-4 py-3 text-center whitespace-nowrap State">🟡 restarting</td>
+						{% elif value.get("State", "N/A") == "exited" %}
+						<td class="px-4 py-3 text-center whitespace-nowrap State">🔴 exited</td>
+						{% else %}
+						<td class="px-4 py-3 text-center whitespace-nowrap State">🟣 {{ value.get("State", "N/A") }}</td>
+						{% endif %}
+						
+						<td class="px-4 py-3 text-center whitespace-nowrap Last_alert">{{value.get("Last_alert", "N/A")}}</td> 
+						
+						<td class="px-4 py-3 text-center whitespace-nowrap Host">{{value.get("Host", "N/A")}}</td>
+					</tr>
+					{% endfor %}
 				</tbody>
 			</table>
 		</section>
 	</div>
-	</main>
 	<footer >
 		<h4>AserverHC v1.0</h4>
 		<h4>Updated : {{time}}</h4>
 	</footer>
+	<script src="/js/fetching.js"></script>
+</main>
 </body>
 </html>

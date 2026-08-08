@@ -11,6 +11,7 @@ import json
 import getpass
 import threading
 from flask import Flask, request, render_template
+from flask import send_from_directory
 from utils import *
 from docker_monitoring import *
 from discord import *
@@ -49,7 +50,7 @@ def flask_server() :
 
 
 	@app.route('/', methods=['GET'])
-	def info() :
+	def get_main() :
 		running = 0
 		stopped = 0
 		for container in docker_dict.values():
@@ -62,10 +63,32 @@ def flask_server() :
 			return render_template('index.html', system_dict=system_dict, docker_dict=docker_dict, running=running, stopped=stopped, time=print_time())
 		return render_template('index.html', system_dict=system_dict, docker_dict=docker_dict, running=running, stopped=stopped, time=print_time())
 	
+	@app.route('/api/dashboard')
+	def dashboard() :
+		running = 0
+		stopped = 0
+		for container in docker_dict.values():
+			if "running" in container.get("State", "").lower():
+				running += 1
+			else:
+				stopped += 1
+		return {
+			"system" : system_dict,
+			"docker" : docker_dict,
+			"running" : running,
+			"stopped" : stopped,
+			"time" : print_time()
+		}
+	@app.route("/js/<filename>")
+	def reloading(filename) :
+		return send_from_directory("./js", filename) # flask sherch the path fron where the script is launched from
+	
 	if (1024 < Flask_port < 65536) :
 		app.run(host='0.0.0.0', port=(Flask_port), debug=True, use_reloader=False)
 	else :
 		app.run(host='0.0.0.0', debug=True , use_reloader=False)
+
+		
 
 
 

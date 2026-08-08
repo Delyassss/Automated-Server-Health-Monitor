@@ -23,9 +23,20 @@ jobs :
         run : cat ./setup/conf/usage.conf
 
       - name : running
-        run : python ./setup/script.py --ci # --ci run the other loop . avoid the endless while 
+        run :  |
+                  python ./setup/script.py --ci &
+                  echo $! > flask.pid                 # --ci run the other loop . avoid the endless while 
+      - name : waiting
+        run : sleep 5
       - name : check_logs
         run : cat ./setup/logs/docker.log && cat ./setup/logs/alerts.log
+      - name : check_our_server
+        run : curl http://localhost:5000
+      - name : cleanup
+        if   : always()
+        run  : kill $(cat flask.pid)
+        
+
 
   two : 
     needs : one
@@ -38,10 +49,14 @@ jobs :
       - name : build
         run : docker build -t monitor . # the git cloud computer has docker so no need to install it 
       - name : start
-        run : docker run --name AserverHC  monitor --ci
-      - name : exit_status # i know it useless but worth for me to keep it 
-        run : if [ $? -ne 0 ]; then exit 1; fi
-
+        run : docker run -d --name AserverHC -p 5000:5000 monitor --ci
+      - name : waiting
+        run : sleep 7
+      - name : check
+        run : curl http://localhost:5000 
+      - name : cleanup
+        if   : always()
+        run  : docker rm -f AserverHC
 
 
   three : 
@@ -54,9 +69,14 @@ jobs :
       - name : build
         run : docker compose build 
       - name : start 
-        run : docker compose run  AserverHc  --ci
-      - name : exit_status # SAME HERE
-        run : if [ $? -ne 0 ]; then exit 1; fi
+        run : docker compose run -d  AserverHc  --ci
+      - name : waiting
+        run : sleep 7
+      - name : check
+        run : curl http://localhost:5000
+      - name : cleanup
+        if   : always()
+        run  : docker compose down
 
 
 

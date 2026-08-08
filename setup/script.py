@@ -82,7 +82,7 @@ def flask_server() :
 	@app.route("/js/<filename>")
 	def reloading(filename) :
 		return send_from_directory("./js", filename) # flask sherch the path fron where the script is launched from
-	
+
 	if (1024 < Flask_port < 65536) :
 		app.run(host='0.0.0.0', port=(Flask_port), debug=True, use_reloader=False)
 	else :
@@ -113,7 +113,7 @@ with open("./setup/logs/docker.log", 'a') as logs:
 			header(logs)
 			header(alerts)
 			threads = []
-
+		
 			t = threading.Thread(target=thread_monitor)
 			threads.append(t)
 			t = threading.Thread(target=flask_server)

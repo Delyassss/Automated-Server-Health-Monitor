@@ -38,6 +38,7 @@ def get_docker_status(logs) -> bool :
 	
 
 def docker_monitoring(logs, docker_dict, docker_previous , alerts) :
+	
 	# docker info ...
 	if get_docker_status(logs) == False :
 		return
@@ -86,6 +87,10 @@ def docker_monitoring(logs, docker_dict, docker_previous , alerts) :
 							print(f"[SUCCESS] : {k} is UP (newly detected)!")
 							send_discord_alert(k, current_state, "SUCCESS")
 							write_alerts_logs(k, current_state, "SUCCESS", alerts)
+						else :
+							print(f"[WARNING] : {k} -> {current_state} (newly detected)")
+							send_discord_alert(k, current_state, "WARNING")
+							write_alerts_logs(k, current_state, "WARNING", alerts)
 						continue 
 				
 					if current_state != docker_previous[k].get('State', "") :

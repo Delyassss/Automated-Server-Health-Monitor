@@ -74,14 +74,15 @@ jobs :
       - name : build
         run : docker compose build 
       - name : start 
-        run : docker compose run -d  AserverHc  --ci
+        run : docker compose run -d --service-ports AserverHc  --ci
       - name : waiting
         run : sleep 7
       - name : check
         run : curl http://localhost:5000
       - name : cleanup
         if   : always()
-        run  : docker compose down
+        run  : docker compose rm -f AserverHC
+
 
 
 

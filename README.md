@@ -5,7 +5,8 @@ A small system and Docker monitoring dashboard built with **Python, Flask, Docke
 The project monitors the host system and Docker containers, exposes the information through a Flask dashboard, records logs, and uses GitHub Actions to automatically test the application and its Docker setup.
 
 ---
-
+## Overview
+![alt text](image.png)
 ## Features
 
 * Monitor system resource usage.

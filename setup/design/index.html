@@ -1,171 +1,228 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>AserverHC</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../static/style.css">
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <title>AserverHC | Retro Terminal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700;800&family=Press+Start+2P&family=Space+Grotesk:wght@300;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --neon-pink: #ff00ff;
+            --neon-cyan: #00f2ff;
+            --neon-yellow: #ffd700;
+            --bg-light: #ffffff;
+            --text-main: #000000;
+        }
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-main);
+            font-family: 'Space Grotesk', sans-serif;
+            background-image: 
+                linear-gradient(rgba(0, 242, 255, 0.1) 1px, transparent 1px), 
+                linear-gradient(90deg, rgba(0, 242, 255, 0.1) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        .retro-title {
+            font-family: 'Press Start 2P', cursive;
+            text-shadow: 4px 4px 0px var(--neon-pink);
+            letter-spacing: -2px;
+            color: #000;
+        }
+        .retro-card {
+            border: 4px solid #000;
+            box-shadow: 8px 8px 0px var(--neon-cyan);
+            background: #fff;
+            transition: all 0.2s ease;
+        }
+        .retro-card:hover {
+            transform: translate(-4px, -4px);
+            box-shadow: 12px 12px 0px var(--neon-pink);
+        }
+        .scanline {
+            width: 100%;
+            height: 100px;
+            z-index: 100;
+            background: linear-gradient(0deg, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 0.03) 50%, rgba(0, 0, 0, 0) 100%);
+            opacity: 0.2;
+            position: fixed;
+            bottom: 100%;
+            animation: scanline 10s linear infinite;
+            pointer-events: none;
+        }
+        @keyframes scanline {
+            0% { bottom: 100%; }
+            100% { bottom: -100px; }
+        }
+        .status-dot-active {
+            background-color: var(--neon-cyan);
+            box-shadow: 0 0 10px var(--neon-cyan);
+        }
+        .status-dot-inactive {
+            background-color: var(--neon-pink);
+            box-shadow: 0 0 10px var(--neon-pink);
+        }
+    </style>
 </head>
-<body class="bg-slate-950 text-slate-300 font-sans antialiased min-h-screen">
-    
-    <!-- Moved script outside the refreshed container so it isn't repeatedly overwritten -->
-    <script src="/js/fetching.js"></script>
-
-    <main id="body" class="max-w-7xl mx-auto p-4 md:p-8 space-y-8">
+<body>
+    <div class="scanline"></div>
+    <div class="min-h-screen p-6 md:p-12 relative">
         
-        <!-- Header Section -->
-        <header class="flex items-end justify-between pb-4 border-b border-slate-800">
-            <div>
-                <h1 class="text-3xl font-bold tracking-tight text-slate-100">AserverHC</h1>
-                <p class="text-sm text-slate-500 mt-1">System Health & Container Dashboard</p>
+        <header class="max-w-7xl mx-auto mb-16 flex flex-col md:flex-row justify-between items-center gap-8">
+            <div class="space-y-2">
+                <h1 class="retro-title text-3xl md:text-5xl text-black">ASERVERHC</h1>
+                <p class="text-cyan-500 font-mono tracking-widest text-sm italic font-bold">// SYSTEM_OVERRIDE_ACTIVE_MODE_80</p>
             </div>
-            <!-- Live Pulse Indicator -->
-            <div class="hidden sm:flex items-center gap-2 mb-1">
-                <span class="relative flex h-2.5 w-2.5">
-                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                  <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
-                </span>
-                <span class="text-xs font-medium uppercase tracking-wider text-slate-400">Live</span>
+            <div class="flex gap-4">
+                <div class="retro-card px-6 py-3 flex items-center gap-3">
+                    <span class="status-dot-active w-3 h-3 rounded-full animate-pulse"></span>
+                    <span class="font-mono font-bold text-sm tracking-tighter">LINK_ESTABLISHED</span>
+                </div>
             </div>
         </header>
-        
-        <!-- Top Cards Grid -->
-        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {% for key in system_dict.keys() %}
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-sm hover:border-slate-700 transition-colors flex flex-col items-center justify-center gap-4">
-                <div class="h-12 w-12 flex items-center justify-center opacity-80">
-                    {% if key == "CPU" %}
-                    <img src="../static/cpu.svg" alt="cpu" class="w-full h-full">
-                    {% elif key == "RAM" %}
-                    <img src="../static/ram.svg" alt="ram" class="w-full h-full">
-                    {% elif key == "DISK" %}
-                    <img src="../static/disk.svg" alt="disk" class="w-full h-full">
-                    {% endif %}
-                </div>
-                <div class="text-center">
-                    <h2 class="text-xs font-bold text-slate-500 uppercase tracking-widest">{{key}}</h2>
-                    <h3 class="text-3xl font-semibold text-slate-100 mt-1 {{key}}-used">{{system_dict[key]["USED"]}}</h3> 
-                </div>
-            </div> 
-            {% endfor %}
+
+        <main id="body" class="max-w-7xl mx-auto space-y-12">
             
-            <!-- Containers Summary Card -->
-            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-sm hover:border-slate-700 transition-colors flex flex-col items-center justify-center gap-4">
-                <div class="h-12 w-12 flex items-center justify-center opacity-80">
-                    <img src="../static/containers.svg" alt="containers" class="w-full h-full">
-                </div>
-                <div class="text-center w-full">
-                    <h2 class="text-xs font-bold text-slate-500 uppercase tracking-widest">Containers</h2>
-                    {% if docker_dict %}
-                    <div class="flex items-center justify-center gap-4 mt-2">
-                        <span class="flex items-center gap-1.5 text-lg font-medium text-slate-300">
-                            <span class="h-2.5 w-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></span> {{running}}
-                        </span>
-                        <span class="flex items-center gap-1.5 text-lg font-medium text-slate-300">
-                            <span class="h-2.5 w-2.5 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]"></span> {{stopped}}
-                        </span>
+            <!-- Metric Cards Section -->
+            <section class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- CPU Card -->
+                <div class="retro-card p-8 group">
+                    <div class="flex justify-between items-start mb-6">
+                        <iconify-icon icon="mdi:cpu-64-bit" class="text-5xl text-yellow-500"></iconify-icon>
+                        <span class="text-[10px] font-mono text-white bg-black px-2 py-1">01_CPU</span>
                     </div>
-                    {% else %}
-                    <h3 class="text-3xl font-semibold text-slate-600 mt-1">N/A</h3>
-                    {% endif %}
+                    <h2 class="text-4xl font-extrabold mb-1">{{ system_dict.CPU.USED }}</h2>
+                    <p class="text-yellow-700 font-black tracking-widest text-xs bg-yellow-100/50 px-2 py-0.5 inline-block border-2 border-yellow-700">UTILIZATION_CORE</p>
                 </div>
+
+                <!-- RAM Card -->
+                <div class="retro-card p-8 group">
+                    <div class="flex justify-between items-start mb-6">
+                        <iconify-icon icon="mdi:memory" class="text-5xl text-cyan-500"></iconify-icon>
+                        <span class="text-[10px] font-mono text-white bg-black px-2 py-1">02_RAM</span>
+                    </div>
+                    <h2 class="text-4xl font-extrabold mb-1">{{ system_dict.RAM.USED }}</h2>
+                    <p class="text-cyan-700 font-black tracking-widest text-xs bg-cyan-100/50 px-2 py-0.5 inline-block border-2 border-cyan-700">MEM_STACK_USED</p>
+                </div>
+
+                <!-- DISK Card -->
+                <div class="retro-card p-8 group">
+                    <div class="flex justify-between items-start mb-6">
+                        <iconify-icon icon="mdi:database" class="text-5xl text-pink-500"></iconify-icon>
+                        <span class="text-[10px] font-mono text-white bg-black px-2 py-1">03_DISK</span>
+                    </div>
+                    <h2 class="text-4xl font-extrabold mb-1">{{ system_dict.DISK.USED }}</h2>
+                    <p class="text-pink-700 font-black tracking-widest text-xs bg-pink-100/50 px-2 py-0.5 inline-block border-2 border-pink-700">DISK_SECTOR_LOAD</p>
+                </div>
+
+                <!-- Containers Card -->
+                <div class="retro-card p-8 group">
+                    <div class="flex justify-between items-start mb-6">
+                        <iconify-icon icon="mdi:docker" class="text-5xl text-blue-400"></iconify-icon>
+                        <span class="text-[10px] font-mono text-white bg-black px-2 py-1">04_DOCKER</span>
+                    </div>
+                    <div class="flex items-center gap-4 mb-1">
+                        <div class="flex items-center gap-2">
+                            <span class="text-3xl font-extrabold text-cyan-400">{{ running }}</span>
+                            <span class="text-xs font-mono text-cyan-600">RUN</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-3xl font-extrabold text-pink-500">{{ stopped }}</span>
+                            <span class="text-xs font-mono text-pink-700">HALT</span>
+                        </div>
+                    </div>
+                    <p class="text-black font-black tracking-widest text-xs bg-gray-100/50 px-2 py-0.5 inline-block border-2 border-black">CONTAINER_INSTANCES</p>
+                </div>
+            </section>
+
+            <!-- Data Tables -->
+            <div class="grid grid-cols-1 xl:grid-cols-2 gap-12">
+                
+                <!-- System Information Table -->
+                <section class="space-y-6">
+                    <div class="flex items-center gap-4 mb-2">
+                        <div class="w-4 h-4 bg-yellow-400"></div>
+                        <h3 class="text-xl font-bold tracking-tighter">SYSTEM_PARAM_LOG</h3>
+                    </div>
+                    <div class="retro-card overflow-hidden">
+                        <table class="w-full text-left font-mono">
+                            <thead>
+                                <tr class="border-b-4 border-black bg-black text-white">
+                                    <th class="px-6 py-3 text-xs uppercase">Component</th>
+                                    <th class="px-6 py-3 text-xs uppercase">Total</th>
+                                    <th class="px-6 py-3 text-xs uppercase">Used</th>
+                                    <th class="px-6 py-3 text-xs uppercase text-right">Free</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y-4 divide-black">
+                                {% for key, value in system_dict.items() %}
+                                <tr class="hover:bg-cyan-100">
+                                    <td class="px-6 py-4 text-sm font-bold text-yellow-400">{{ key }}_CORE</td>
+                                    <td class="px-6 py-4 text-xs text-slate-400">{{ value.get('TOTAL', 'N/A') }}</td>
+                                    <td class="px-6 py-4 text-sm font-bold">{{ value.get('USED', 'N/A') }}</td>
+                                    <td class="px-6 py-4 text-xs text-right text-slate-400">{{ value.get('AVAILABLE', 'N/A') }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Containers Table -->
+                <section class="space-y-6">
+                    <div class="flex items-center gap-4 mb-2">
+                        <div class="w-4 h-4 bg-cyan-400"></div>
+                        <h3 class="text-xl font-bold tracking-tighter">ACTIVE_PROCESS_POOL</h3>
+                    </div>
+                    <div class="retro-card overflow-hidden">
+                        <table class="w-full text-left font-mono">
+                            <thead>
+                                <tr class="border-b-4 border-black bg-black text-white text-xs">
+                                    <th class="px-6 py-3 uppercase">Container</th>
+                                    <th class="px-6 py-3 uppercase">State</th>
+                                    <th class="px-6 py-3 uppercase text-right">Host</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y-4 divide-black">
+                                {% for key, value in docker_dict.items() %}
+                                <tr class="{% if value.get('State') == 'running' %}bg-cyan-50{% else %}opacity-40{% endif %}">
+                                    <td class="px-6 py-4 text-sm font-bold text-black">{{ key }}</td>
+                                    <td class="px-6 py-4">
+                                        {% if value.get('State') == 'running' %}
+                                        <span class="bg-cyan-400 text-black px-2 py-0.5 text-[10px] font-bold">RUNNING</span>
+                                        {% elif value.get('State') == 'exited' %}
+                                        <span class="bg-pink-600 text-white px-2 py-0.5 text-[10px] font-bold">EXITED</span>
+                                        {% else %}
+                                        <span class="bg-gray-400 text-white px-2 py-0.5 text-[10px] font-bold">{{ value.get('State', 'UNKNOWN').upper() }}</span>
+                                        {% endif %}
+                                    </td>
+                                    <td class="px-6 py-4 text-right text-xs text-slate-400">{{ value.get('Host', 'root') }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
             </div>
-        </section>
 
-        <!-- Data Tables Grid -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            
-            <!-- System Information Table -->
-            <section class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col shadow-sm">
-                <div class="p-5 border-b border-slate-800 bg-slate-900/50">
-                    <h2 class="text-sm font-semibold tracking-wide text-slate-200 uppercase">System Information</h2>
+            <!-- Footer -->
+            <footer class="pt-12 border-t-4 border-black flex flex-col md:flex-row justify-between items-center gap-6">
+                <div class="font-mono text-[10px] text-black font-bold flex items-center gap-4">
+                    <span>V1.0_LATEST</span>
+                    <span class="h-4 w-[1px] bg-slate-700"></span>
+                    <span>BUILD_2026.08.13</span>
                 </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-left whitespace-nowrap">
-                        <thead class="text-xs text-slate-500 uppercase bg-slate-950/30">
-                            <tr>
-                                <th class="px-6 py-4 font-medium">Component</th>
-                                <th class="px-6 py-4 font-medium text-right">Total</th>
-                                <th class="px-6 py-4 font-medium text-right">Used</th>
-                                <th class="px-6 py-4 font-medium text-right">Free</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-800/60">
-                            {% for key, value in system_dict.items() %}
-                            <tr class="hover:bg-slate-800/40 transition-colors">
-                                <td class="px-6 py-4 font-medium text-slate-300">{{key}}</td>
-                                <td class="px-6 py-4 text-right text-slate-400 font-mono {{key}}-total">{{value.get("TOTAL", "N/A")}}</td>
-                                <td class="px-6 py-4 text-right text-slate-400 font-mono {{key}}-used">{{value.get("USED", "N/A")}}</td>
-                                <td class="px-6 py-4 text-right text-slate-400 font-mono {{key}}-free">{{value.get("AVAILABLE", "N/A")}}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs font-mono text-cyan-600 font-bold">UPDATED:</span>
+                    <span class="bg-black text-white font-mono text-xs px-3 py-1">{{ time }}</span>
                 </div>
-            </section>
-            
-            <!-- Containers Table -->
-            <section class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col shadow-sm">
-                <div class="p-5 border-b border-slate-800 bg-slate-900/50">
-                    <h2 class="text-sm font-semibold tracking-wide text-slate-200 uppercase">Container Status</h2>
-                </div>
-                <div class="overflow-x-auto">
-                    <table class="w-full text-sm text-left whitespace-nowrap">
-                        <thead class="text-xs text-slate-500 uppercase bg-slate-950/30">
-                            <tr>
-                                <th class="px-6 py-4 font-medium">Container</th>
-                                <th class="px-6 py-4 font-medium">Status</th>
-                                <th class="px-6 py-4 font-medium text-right">Last Alert</th>
-                                <th class="px-6 py-4 font-medium text-right">Host</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-slate-800/60">
-                            {% for key, value in docker_dict.items() %}
-                            <tr class="hover:bg-slate-800/40 transition-colors" container_name="{{key}}">
-                                <td class="px-6 py-4 font-medium text-slate-300">{{key}}</td>
-                                
-                                <td class="px-6 py-4 State">
-                                    {% set state = value.get("State", "N/A") %}
-                                    {% if state == "running" %}
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-emerald-400/10 text-emerald-400 border border-emerald-400/20">
-                                        <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> Running
-                                    </span>
-                                    {% elif state == "paused" %}
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-amber-400/10 text-amber-400 border border-amber-400/20">
-                                        <span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span> Paused
-                                    </span>
-                                    {% elif state == "restarting" %}
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-yellow-400/10 text-yellow-400 border border-yellow-400/20">
-                                        <span class="h-1.5 w-1.5 rounded-full bg-yellow-500"></span> Restarting
-                                    </span>
-                                    {% elif state == "exited" %}
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-rose-400/10 text-rose-400 border border-rose-400/20">
-                                        <span class="h-1.5 w-1.5 rounded-full bg-rose-500"></span> Exited
-                                    </span>
-                                    {% else %}
-                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-slate-400/10 text-slate-400 border border-slate-400/20">
-                                        <span class="h-1.5 w-1.5 rounded-full bg-slate-500"></span> {{ state|title }}
-                                    </span>
-                                    {% endif %}
-                                </td>
-                                
-                                <td class="px-6 py-4 text-right text-slate-500 font-mono Last_alert">{{value.get("Last_alert", "N/A")}}</td> 
-                                <td class="px-6 py-4 text-right text-slate-500 font-mono Host">{{value.get("Host", "N/A")}}</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-        </div>
+            </footer>
+        </main>
+    </div>
 
-        <!-- Footer -->
-        <footer class="pt-6 mt-4 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500">
-            <p>AserverHC <span class="text-slate-600">v1.0</span></p>
-            <p class="mt-2 sm:mt-0">Last updated: <span class="font-mono text-slate-400">{{time}}</span></p>
-        </footer>
-        
-    </main>
+    <script src="/js/fetching.js"></script>
 </body>
 </html>

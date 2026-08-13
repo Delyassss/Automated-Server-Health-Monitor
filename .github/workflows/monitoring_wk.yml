@@ -81,7 +81,7 @@ jobs :
         run : curl http://localhost:5000
       - name : cleanup
         if   : always()
-        run  : docker compose rm -f AserverHC
+        run  : docker compose rm -f AserverHc
 
 
 

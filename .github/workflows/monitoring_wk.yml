@@ -49,7 +49,7 @@ jobs :
       - name : build
         run : docker build -t monitor . # the git cloud computer has docker so no need to install it 
       - name : start
-        run : docker run -d --name AserverHC -p 5000:5000 monitor --ci 
+        run : docker run -d --name AserverHC --env-file .env  -p 5000:5000 monitor --ci 
       - name : waiting
         run : sleep 7
       - name: check_container

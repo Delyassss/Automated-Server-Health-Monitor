@@ -1,121 +1,171 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>AserverHc</title>
-	<meta charset="UTF-8">
-	<link rel="stylesheet" href="../static/style.css">
-	<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <title>AserverHC</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
 </head>
-<body>
-	<main  id ="body" class="max-w-7xl mx-auto p-8">
-		
-		<header>
-			<h1 class="p-8">AserverHC Dashboard</h1>
-		</header>
-		
-		<div class = "w-full  p-6 bg-gray-800 rounded-xl shadow-lg flex-1">
-			
-			<section class="w-full flex gap-9 justify-center">
-				{% for key in system_dict.keys() %}
-				<div class="  card-size w-full bg-gray-700 rounded-xl p-6 shadow-lg">
-					<span> 
-						<div class="icon-card p-6 justify-center">
-							{% if key == "CPU" %}
-							<img  src="../static/cpu.svg" alt="cpu">
-							{% elif key == "RAM" %}
-							<img src="../static/ram.svg" alt="ram">
-							{% elif key == "DISK" %}
-							<img src="../static/disk.svg" alt="disk">
-							{% endif %}
-						</div>
-						<h2 class = "text-4xl"> {{key}} </h2>
-						<h3 class="{{key}}-used p-2 text-card"> {{system_dict[key]["USED"]}} </h3> 
-					</span>
-				</div> 
-				{% endfor %}
-				<div class="card-size w-full bg-gray-700 rounded-xl p-6 shadow-lg">
-					<span>
-						<div class="icon-card p-6">
-							<img src="../static/containers.svg" alt="containers">
-						</div>
-						<h2 class="text-4xl">Containers</h2>
-						{% if docker_dict %}
-						<h3 class="text-card p-2 whitespace-nowrap"> <span class="small" id="running">🟢 {{running}}</span> <span class="small" id ="stopped">🔴 {{stopped}}</span> </h3>
-						<!-- <h3 class="text-card whitespace-nowrap"> 🔴 {{stopped}} </h3> -->
-						{% else %}
-						<h3 class="text-card whitespace-nowrap "> N/A</h3>
-						{% endif %}
-					</span>
-				</div>
-			</section>
-		</div>
-		<div class="flex gap-8 p-8">
-		<section  class="flex-1 bg-gray-800 rounded-xl p-6 shadow-lg">
-			<h2 class = "mb-6">System Information</h2>
-			<table class="w-full table-auto">
-				<thead class="bg-gray-700 uppercase">
-					<tr class="border-b border-gray-700">
-						<th class="px-4 py-3 text-center">Component</th>
-						<th class="px-4 py-3 text-center">Total</th>
-						<th class="px-4 py-3 text-center">Used</th>
-						<th class="px-4 py-3 text-center">Free</th>
-					</tr>
-				</thead>
-				<tbody>
-					{% for key , value in system_dict.items() %}
-					<tr class="hover:bg-gray-700 transition-colors border-b border-gray-700">
-						<td class="px-4 py-3 text-center">{{key}}</td>
-						<td class="px-4 py-3 text-center whitespace-nowrap {{key}}-total">{{value.get("TOTAL", "N/A")}}</td>
-						<td class="px-4 py-3 text-center whitespace-nowrap {{key}}-used">{{value.get("USED", "N/A")}}</td>
-						<td class="px-4 py-3 text-center whitespace-nowrap {{key}}-free">{{value.get("AVAILABLE", "N/A")}}</td>
-					</tr>
-					{% endfor %}
-				</tbody>
-			</table>
-		</section>
-		
-		<section class="flex-1 bg-gray-800 rounded-xl p-6 shadow-lg">
-			<h2 class="mb-6">Containers</h2>
-			<table class="w-full table-auto">
-				<thead class="bg-gray-700 uppercase">
-					<tr class="border-b border-gray-700">
-						<th class="px-4 py-3 text-center">Container</th>
-						<th class="px-4 py-3 text-center">Status</th>
-						<th class="px-4 py-3 text-center whitespace-nowrap">Last alert</th>
-						<th class="px-4 py-3 text-center">Host</th>
-					</tr>
-				</thead>
-				<tbody>
-					{% for key , value in docker_dict.items() %}
-					<tr class="hover:bg-gray-700 transition-colors border-b border-gray-700" container_name="{{key}}">
-						<td class="px-4 py-3">{{key}}</td>
-						
-						{% if value.get("State", "N/A") == "running" %}
-						<td class="px-4 py-3 text-center whitespace-nowrap State">🟢 running</td>
-						{% elif value.get("State", "N/A") == "paused" %}
-						<td class="px-4 py-3 text-center whitespace-nowrap State">🟠 paused</td>
-						{% elif value.get("State", "N/A") == "restarting" %}
-						<td class="px-4 py-3 text-center whitespace-nowrap State">🟡 restarting</td>
-						{% elif value.get("State", "N/A") == "exited" %}
-						<td class="px-4 py-3 text-center whitespace-nowrap State">🔴 exited</td>
-						{% else %}
-						<td class="px-4 py-3 text-center whitespace-nowrap State">🟣 {{ value.get("State", "N/A") }}</td>
-						{% endif %}
-						
-						<td class="px-4 py-3 text-center whitespace-nowrap Last_alert">{{value.get("Last_alert", "N/A")}}</td> 
-						
-						<td class="px-4 py-3 text-center whitespace-nowrap Host">{{value.get("Host", "N/A")}}</td>
-					</tr>
-					{% endfor %}
-				</tbody>
-			</table>
-		</section>
-	</div>
-	<footer >
-		<h4>AserverHC v1.0</h4>
-		<h4>Updated : {{time}}</h4>
-	</footer>
-	<script src="/js/fetching.js"></script>
-</main>
+<body class="bg-slate-950 text-slate-300 font-sans antialiased min-h-screen">
+    
+    <!-- Moved script outside the refreshed container so it isn't repeatedly overwritten -->
+    <script src="/js/fetching.js"></script>
+
+    <main id="body" class="max-w-7xl mx-auto p-4 md:p-8 space-y-8">
+        
+        <!-- Header Section -->
+        <header class="flex items-end justify-between pb-4 border-b border-slate-800">
+            <div>
+                <h1 class="text-3xl font-bold tracking-tight text-slate-100">AserverHC</h1>
+                <p class="text-sm text-slate-500 mt-1">System Health & Container Dashboard</p>
+            </div>
+            <!-- Live Pulse Indicator -->
+            <div class="hidden sm:flex items-center gap-2 mb-1">
+                <span class="relative flex h-2.5 w-2.5">
+                  <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                  <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500"></span>
+                </span>
+                <span class="text-xs font-medium uppercase tracking-wider text-slate-400">Live</span>
+            </div>
+        </header>
+        
+        <!-- Top Cards Grid -->
+        <section class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {% for key in system_dict.keys() %}
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-sm hover:border-slate-700 transition-colors flex flex-col items-center justify-center gap-4">
+                <div class="h-12 w-12 flex items-center justify-center opacity-80">
+                    {% if key == "CPU" %}
+                    <img src="../static/cpu.svg" alt="cpu" class="w-full h-full">
+                    {% elif key == "RAM" %}
+                    <img src="../static/ram.svg" alt="ram" class="w-full h-full">
+                    {% elif key == "DISK" %}
+                    <img src="../static/disk.svg" alt="disk" class="w-full h-full">
+                    {% endif %}
+                </div>
+                <div class="text-center">
+                    <h2 class="text-xs font-bold text-slate-500 uppercase tracking-widest">{{key}}</h2>
+                    <h3 class="text-3xl font-semibold text-slate-100 mt-1 {{key}}-used">{{system_dict[key]["USED"]}}</h3> 
+                </div>
+            </div> 
+            {% endfor %}
+            
+            <!-- Containers Summary Card -->
+            <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 shadow-sm hover:border-slate-700 transition-colors flex flex-col items-center justify-center gap-4">
+                <div class="h-12 w-12 flex items-center justify-center opacity-80">
+                    <img src="../static/containers.svg" alt="containers" class="w-full h-full">
+                </div>
+                <div class="text-center w-full">
+                    <h2 class="text-xs font-bold text-slate-500 uppercase tracking-widest">Containers</h2>
+                    {% if docker_dict %}
+                    <div class="flex items-center justify-center gap-4 mt-2">
+                        <span class="flex items-center gap-1.5 text-lg font-medium text-slate-300">
+                            <span class="h-2.5 w-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></span> {{running}}
+                        </span>
+                        <span class="flex items-center gap-1.5 text-lg font-medium text-slate-300">
+                            <span class="h-2.5 w-2.5 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.5)]"></span> {{stopped}}
+                        </span>
+                    </div>
+                    {% else %}
+                    <h3 class="text-3xl font-semibold text-slate-600 mt-1">N/A</h3>
+                    {% endif %}
+                </div>
+            </div>
+        </section>
+
+        <!-- Data Tables Grid -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            
+            <!-- System Information Table -->
+            <section class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col shadow-sm">
+                <div class="p-5 border-b border-slate-800 bg-slate-900/50">
+                    <h2 class="text-sm font-semibold tracking-wide text-slate-200 uppercase">System Information</h2>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left whitespace-nowrap">
+                        <thead class="text-xs text-slate-500 uppercase bg-slate-950/30">
+                            <tr>
+                                <th class="px-6 py-4 font-medium">Component</th>
+                                <th class="px-6 py-4 font-medium text-right">Total</th>
+                                <th class="px-6 py-4 font-medium text-right">Used</th>
+                                <th class="px-6 py-4 font-medium text-right">Free</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800/60">
+                            {% for key, value in system_dict.items() %}
+                            <tr class="hover:bg-slate-800/40 transition-colors">
+                                <td class="px-6 py-4 font-medium text-slate-300">{{key}}</td>
+                                <td class="px-6 py-4 text-right text-slate-400 font-mono {{key}}-total">{{value.get("TOTAL", "N/A")}}</td>
+                                <td class="px-6 py-4 text-right text-slate-400 font-mono {{key}}-used">{{value.get("USED", "N/A")}}</td>
+                                <td class="px-6 py-4 text-right text-slate-400 font-mono {{key}}-free">{{value.get("AVAILABLE", "N/A")}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+            
+            <!-- Containers Table -->
+            <section class="bg-slate-900 border border-slate-800 rounded-2xl overflow-hidden flex flex-col shadow-sm">
+                <div class="p-5 border-b border-slate-800 bg-slate-900/50">
+                    <h2 class="text-sm font-semibold tracking-wide text-slate-200 uppercase">Container Status</h2>
+                </div>
+                <div class="overflow-x-auto">
+                    <table class="w-full text-sm text-left whitespace-nowrap">
+                        <thead class="text-xs text-slate-500 uppercase bg-slate-950/30">
+                            <tr>
+                                <th class="px-6 py-4 font-medium">Container</th>
+                                <th class="px-6 py-4 font-medium">Status</th>
+                                <th class="px-6 py-4 font-medium text-right">Last Alert</th>
+                                <th class="px-6 py-4 font-medium text-right">Host</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-800/60">
+                            {% for key, value in docker_dict.items() %}
+                            <tr class="hover:bg-slate-800/40 transition-colors" container_name="{{key}}">
+                                <td class="px-6 py-4 font-medium text-slate-300">{{key}}</td>
+                                
+                                <td class="px-6 py-4 State">
+                                    {% set state = value.get("State", "N/A") %}
+                                    {% if state == "running" %}
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-emerald-400/10 text-emerald-400 border border-emerald-400/20">
+                                        <span class="h-1.5 w-1.5 rounded-full bg-emerald-500"></span> Running
+                                    </span>
+                                    {% elif state == "paused" %}
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-amber-400/10 text-amber-400 border border-amber-400/20">
+                                        <span class="h-1.5 w-1.5 rounded-full bg-amber-500"></span> Paused
+                                    </span>
+                                    {% elif state == "restarting" %}
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-yellow-400/10 text-yellow-400 border border-yellow-400/20">
+                                        <span class="h-1.5 w-1.5 rounded-full bg-yellow-500"></span> Restarting
+                                    </span>
+                                    {% elif state == "exited" %}
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-rose-400/10 text-rose-400 border border-rose-400/20">
+                                        <span class="h-1.5 w-1.5 rounded-full bg-rose-500"></span> Exited
+                                    </span>
+                                    {% else %}
+                                    <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-md text-xs font-medium bg-slate-400/10 text-slate-400 border border-slate-400/20">
+                                        <span class="h-1.5 w-1.5 rounded-full bg-slate-500"></span> {{ state|title }}
+                                    </span>
+                                    {% endif %}
+                                </td>
+                                
+                                <td class="px-6 py-4 text-right text-slate-500 font-mono Last_alert">{{value.get("Last_alert", "N/A")}}</td> 
+                                <td class="px-6 py-4 text-right text-slate-500 font-mono Host">{{value.get("Host", "N/A")}}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </div>
+
+        <!-- Footer -->
+        <footer class="pt-6 mt-4 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500">
+            <p>AserverHC <span class="text-slate-600">v1.0</span></p>
+            <p class="mt-2 sm:mt-0">Last updated: <span class="font-mono text-slate-400">{{time}}</span></p>
+        </footer>
+        
+    </main>
 </body>
 </html>

@@ -49,12 +49,16 @@ jobs :
       - name : build
         run : docker build -t monitor . # the git cloud computer has docker so no need to install it 
       - name : start
-        run : docker run -d --name AserverHC -p 5000:5000 monitor --ci & curl http://localhost:5000
+        run : docker run -d --name AserverHC -p 5000:5000 monitor --ci 
       - name : waiting
         run : sleep 7
-      # - name : check
-      #   run : curl http://localhost:5000
-
+      - name: check_container
+        run: docker ps -a
+      - name: container_logs
+        run: docker logs AserverHC
+      - name : check
+        run : curl http://localhost:5000
+ 
       - name : cleanup
         if   : always()
         run  : docker rm -f AserverHC
